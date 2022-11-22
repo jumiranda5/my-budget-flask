@@ -1,8 +1,13 @@
 from flask import Flask, render_template
 from helpers import get_date, get_month_data
+from helpers_db import init_db_tables
 
 
 app = Flask(__name__)
+
+
+# Create database tables if they don't exist
+init_db_tables()
 
 
 # Home
