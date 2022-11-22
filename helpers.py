@@ -18,8 +18,18 @@ def get_date():
 
 def get_month_data(year, month):
 
+    # Validate month as an integer from 1 to 12
+    try:
+        m = int(month)
+        y = int(year)
+        if m < 1 or m > 12:
+            raise ValueError
+    except ValueError:
+        return "Invalid month"
+
+    # return month dictionary
     return {
-        "year": year,
-        "month": month,
-        "month_name": month_name[int(month)]
+        "year": y,
+        "month": m,
+        "month_name": month_name[m]
     }
