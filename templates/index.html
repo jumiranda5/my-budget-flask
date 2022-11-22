@@ -10,9 +10,9 @@
 
     <!-- Month -->
     <div>
-        <a href="/month/2022/11">Click to open month</a>
-        <h1 id="year">year</h1>
-        <h2 id="month">month name</h2>
+        <a href="/month/{{date.year}}/{{date.month}}">Click to open month</a>
+        <h1 id="year">{{date.year}}</h1>
+        <h2 id="month">{{date.month_name}}</h2>
         <button id="prev" type="button">Previous</button>
         <button id="next" type="button">Next</button>
         <p>Balance</p>
@@ -29,14 +29,14 @@
 
     <!-- Category -->
     <div>
-        <a href="/categories/2022/11">Click to open categories</a>
+        <a href="/categories/{{date.year}}/{{date.month}}">Click to open categories</a>
         <p>month</p>
         <p>Graphic with categories data</p>
     </div>
 
     <!-- Year -->
     <div>
-        <a href="/year/2022">Click to open year</a>
+        <a href="/year/{{date.year}}">Click to open year</a>
         <p>year</p>
         <p>Graphic with year data</p>
     </div>

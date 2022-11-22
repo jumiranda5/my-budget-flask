@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from helpers import get_date, get_month_data
 
 
 app = Flask(__name__)
@@ -7,13 +8,15 @@ app = Flask(__name__)
 # Home
 @app.route("/")
 def index():
-    return render_template("index.html")
+    date = get_date()
+    return render_template("index.html", date=date)
 
 
 # Month
 @app.route("/month/<year>/<month>")
 def month(year, month):
-    return render_template("month.html")
+    data = get_month_data(year, month)
+    return render_template("month.html", data=data)
 
 
 # Pending
@@ -25,13 +28,14 @@ def pending():
 # Categories
 @app.route("/categories/<year>/<month>")
 def categories(year, month):
-    return render_template("categories.html")
+    data = get_month_data(year, month)
+    return render_template("categories.html", data=data)
 
 
 # Year
 @app.route("/year/<year>")
 def year(year):
-    return render_template("year.html")
+    return render_template("year.html", year=year)
 
 
 # Add Transaction
