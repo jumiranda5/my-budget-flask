@@ -1,11 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>My Budget</title>
-    </head>
-    <body>
-        hello, world
-    </body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+    <h1>Home Page</h1>
+
+    <!-- Month -->
+    <div>
+        <a href="/month/2022/11">Click to open month</a>
+        <h1 id="year">year</h1>
+        <h2 id="month">month name</h2>
+        <button id="prev" type="button">Previous</button>
+        <button id="next" type="button">Next</button>
+        <p>Balance</p>
+        <p>Income</p>
+        <p>Expenses</p>
+    </div>
+
+    <!-- Pending -->
+    <div>
+        <a href="/pending">Click to open pending</a>
+        <p>Number of bills pending</p>
+        <p>amount</p>
+    </div>
+
+    <!-- Category -->
+    <div>
+        <a href="/categories/2022/11">Click to open categories</a>
+        <p>month</p>
+        <p>Graphic with categories data</p>
+    </div>
+
+    <!-- Year -->
+    <div>
+        <a href="/year/2022">Click to open year</a>
+        <p>year</p>
+        <p>Graphic with year data</p>
+    </div>
+
+{% endblock %}
