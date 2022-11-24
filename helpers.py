@@ -1,5 +1,6 @@
 from datetime import datetime
 from calendar import month_name
+from helpers_db import select_month_data
 import re
 
 
@@ -22,18 +23,22 @@ def get_month_data(year, month):
 
     # Validate month as an integer from 1 to 12
     try:
-        m = int(month)
-        y = int(year)
-        if m < 1 or m > 12:
+        month = int(month)
+        year = int(year)
+        if month < 1 or month > 12:
             raise ValueError
     except ValueError:
         return "Invalid month"
 
+    # Get data from db
+    rows = select_month_data(year, month)
+
     # return month dictionary
     return {
-        "year": y,
-        "month": m,
-        "month_name": month_name[m]
+        "year": year,
+        "month": month,
+        "month_name": month_name[month],
+        "rows": rows
     }
 
 

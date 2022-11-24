@@ -51,3 +51,19 @@ def insert_transaction(data):
     finally:
         con.close()
         return msg
+
+
+def select_month_data(year, month):
+
+    con = sql.connect("budget.db")
+    con.row_factory = sql.Row
+
+    cur = con.cursor()
+    cur.execute(
+        "select * from transactions WHERE (year=? AND month=?) OR fixed=1",
+        (year, month),
+    )
+
+    rows = cur.fetchall()
+
+    return rows

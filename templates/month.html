@@ -12,4 +12,34 @@
     <a href="/add">Add</a>
     <a href="/edit/0">Edit</a>
 
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Tag</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Repeat</th>
+                    <th>Fixed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data.rows %}
+                    <tr>
+                        <td>{{row.day}}</td>
+                        <td>{{row.tag}}</td>
+                        <td>{{row.description}}</td>
+                        <td>{{row.amount}}</td>
+                        <td>{{row.type}}</td>
+                        <td>{{row.repeat}}</td>
+                        <td>{{row.fixed}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
 {% endblock %}

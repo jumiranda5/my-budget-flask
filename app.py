@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from helpers import get_date, get_month_data
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
-from helpers_db import init_db_tables, insert_transaction
+from helpers_db import init_db_tables, insert_transaction, select_month_data
 
 
 app = Flask(__name__)
