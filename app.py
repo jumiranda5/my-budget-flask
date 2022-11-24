@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from helpers import get_date, get_month_data
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
-from helpers_db import init_db_tables
+from helpers_db import init_db_tables, insert_transaction
 
 
 app = Flask(__name__)
@@ -45,32 +45,31 @@ def year(year):
 
 
 # Add Transaction
-@app.route("/add", methods = ['POST', 'GET'])
+@app.route("/add", methods=["POST", "GET"])
 def add():
     if request.method == "POST":
         # Form checkbox
-        if request.form.get('fixed'):
+        if request.form.get("fixed"):
             fixed = 1
         else:
             fixed = 0
 
         # Create dictionary with validated inputs
         data = {
-            "date": validate_date(request.form['date']),
-            "amount": validate_amount(request.form['amount']),
-            "description": validate_text(request.form['description']),
-            "tag": validate_text(request.form['tag']),
+            "date": validate_date(request.form["date"]),
+            "amount": validate_amount(request.form["amount"]),
+            "description": validate_text(request.form["description"]),
+            "tag": validate_text(request.form["tag"]),
             "fixed": fixed,
-            "repeat": validate_repeat(request.form['repeat'])
+            "repeat": validate_repeat(request.form["repeat"]),
+            "type": "out",
         }
 
+        # TODO: handle invalid data
+
         # Insert data on db
-        print(f"==================> {data['date']}")
-        print(f"==================> {data['amount']}")
-        print(f"==================> {data['description']}")
-        print(f"==================> {data['tag']}")
-        print(f"==================> {data['fixed']}")
-        print(f"==================> {data['repeat']}")
+        msg = insert_transaction(data)
+        print(f"================> {msg}")
 
         return redirect("/month/2022/11")
     else:
