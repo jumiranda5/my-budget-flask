@@ -8,4 +8,30 @@
 
     <h1>Add Page</h1>
 
+    <form action="/add" method="post">
+
+        <!-- TODO -->
+
+        <input type="date" id="date" name="date" value="{{today}}">
+        <br>
+        <br>
+        <input id="amount" name="amount" placeholder="Amount" type="text">
+        <br>
+        <br>
+        <input id="description" name="description" placeholder="Description" type="text">
+        <br>
+        <br>
+        <input id="tag" name="tag" placeholder="Tag" type="text">
+        <br>
+        <br>
+        <label for="fixed">Is it fixed?</label>
+        <input type="checkbox" id="fixed" name="fixed" value="Fixed">
+        <br>
+        <br>
+        <input id="repeat" name="repeat" placeholder="Repeat" type="number">
+        <br>
+        <br>
+        <button type="submit">Add Transaction</button>
+    </form>
+
 {% endblock %}
