@@ -38,6 +38,10 @@ def get_month_data(year, month):
 
 
 def validate_date(date):
+    # Return invalid if date is empty
+    if not date:
+        return "invalid"
+
     # Date format must be yyyy-mm-dd
     d = date.split("-")
 
@@ -57,11 +61,15 @@ def validate_date(date):
     except ValueError:
         return 'invalid'
 
-    # return list[year, month, day]
-    return d
+    # return list of integers
+    return [year, month, day]
 
 
 def validate_amount(amount):
+    # If amount in null => amount = 0
+    if not amount:
+        amount = "0.0"
+
     # get float from amount
     amount = re.sub(r"[^0-9.,]", "", amount)
     amount = amount.replace("," , ".")
@@ -86,19 +94,20 @@ def validate_text(text):
         return ""
 
     # remove some untrusted characters
-    t = re.sub(r"[<>=&|;$`!+=\\]", " ", text)
+    t = re.sub(r"[<>=&|;$`!+=\\]", "", text)
     return t
 
 
 def validate_repeat(repeat):
     # if repeat is empty => return None
     if not repeat:
-        return None
+        return 1
 
     # Must be a positive integer
     try:
         r = int(repeat)
         if r <= 0:
-            raise ValueError
+            return 1
+        return r
     except:
         return 'invalid'
