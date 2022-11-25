@@ -79,9 +79,12 @@ def validate_amount(amount):
     amount = re.sub(r"[^0-9.,]", "", amount)
     amount = amount.replace("," , ".")
     parts = amount.split(".")
-    decimals = parts[-1]
-    parts.pop()
-    amount = f"{''.join(parts)}.{decimals}"
+    if len(parts) > 1:
+        decimals = parts[-1]
+        parts.pop()
+        amount = f"{''.join(parts)}.{decimals}"
+    else:
+        amount = parts[0]
 
     # Amount should be a float or an integer that converts to float
     try:
