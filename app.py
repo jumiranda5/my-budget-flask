@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from helpers import get_date, get_month_data
+from helpers import get_date, get_month
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
 from helpers_db import init_db_tables, insert_transaction, select_month_data
 
@@ -21,7 +21,17 @@ def index():
 # Month
 @app.route("/month/<year>/<month>")
 def month(year, month):
-    data = get_month_data(year, month)
+    # Get month (year, month and month name dict)
+    data = get_month(year, month)
+
+    # Get month transactions from db
+    month_data = select_month_data(year, month)
+    print(month_data)
+
+    # Add month transactions to data dict
+    data["rows"] = month_data
+    print(data)
+
     return render_template("month.html", data=data)
 
 
@@ -34,7 +44,7 @@ def pending():
 # Categories
 @app.route("/categories/<year>/<month>")
 def categories(year, month):
-    data = get_month_data(year, month)
+    data = get_month(year, month)
     return render_template("categories.html", data=data)
 
 
