@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from helpers import get_date, get_month
+from helpers import get_date, get_month, get_prev_month, get_next_month
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
 from helpers_db import init_db_tables, insert_transaction, select_month_data
 
@@ -21,18 +21,23 @@ def index():
 # Month
 @app.route("/month/<year>/<month>")
 def month(year, month):
-    # Get month (year, month and month name dict)
+
+    # Get month dict
     data = get_month(year, month)
 
     # Get month transactions from db
     month_data = select_month_data(year, month)
-    print(month_data)
 
     # Add month transactions to data dict
     data["rows"] = month_data
-    print(data)
 
-    return render_template("month.html", data=data)
+    # Get previous and next month from data => integers
+    prev = get_prev_month(data['year'], data['month'])
+    next = get_next_month(data['year'], data['month'])
+
+    # TODO: handle error
+
+    return render_template("month.html", data=data, prev=prev, next=next)
 
 
 # Pending

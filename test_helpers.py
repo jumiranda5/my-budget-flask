@@ -18,9 +18,9 @@ def test_get_date():
 
 
 def test_get_month():
-    assert h.get_month("2022", "abc") == "Invalid month"
-    assert h.get_month("2022", "0") == "Invalid month"
-    assert h.get_month("2022", "13") == "Invalid month"
+    assert h.get_month("2022", "abc") == "invalid month"
+    assert h.get_month("2022", "0") == "invalid month"
+    assert h.get_month("2022", "13") == "invalid month"
     assert h.get_month("2022", "11") == {
             "year": 2022, 
             "month": 11, 

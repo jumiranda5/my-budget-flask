@@ -19,21 +19,49 @@ def get_date():
 
 
 def get_month(year, month):
-
-    # Validate month as an integer from 1 to 12
-    try:
-        month = int(month)
+    # Validate year and month and convert to integers
+    valid = validate_date(f"{year}-{month}-01")
+    if valid:
         year = int(year)
-        if month < 1 or month > 12:
-            raise ValueError
-    except ValueError:
-        return "Invalid month"
+        month = int(month)
+    else:
+        return "invalid month"
 
     # return month dictionary
     return {
         "year": year,
         "month": month,
         "month_name": month_name[month]
+    }
+
+
+def get_next_month(year, month):
+    # if month is december, start new year
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+    else:
+        next_month = month + 1
+        next_year = year
+
+    return {
+        "year": next_year, 
+        "month": next_month
+    }
+
+
+def get_prev_month(year, month):
+    # if january, start previous year on december
+    if month == 1:
+        prev_month = 12
+        prev_year = year - 1
+    else:
+        prev_month = month - 1
+        prev_year = year
+
+    return {
+        "year": prev_year, 
+        "month": prev_month
     }
 
 
