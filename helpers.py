@@ -12,7 +12,7 @@ def get_date():
         "year": today.year,
         "month": today.month,
         "month_name": month_name[today.month],
-        "day": today.day 
+        "day": today.day,
     }
 
     return date
@@ -21,21 +21,21 @@ def get_date():
 def get_month(year, month):
     # Validate year and month and convert to integers
     valid = validate_date(f"{year}-{month}-01")
-    if valid:
+    if not valid == "invalid":
         year = int(year)
         month = int(month)
     else:
         return "invalid month"
 
     # return month dictionary
-    return {
-        "year": year,
-        "month": month,
-        "month_name": month_name[month]
-    }
+    return {"year": year, "month": month, "month_name": month_name[month]}
 
 
 def get_next_month(year, month):
+    # return error msg if month and year are not integers
+    if not isinstance(year, int) or not isinstance(month, int):
+        return "invalid format"
+
     # if month is december, start new year
     if month == 12:
         next_month = 1
@@ -43,14 +43,14 @@ def get_next_month(year, month):
     else:
         next_month = month + 1
         next_year = year
-
-    return {
-        "year": next_year, 
-        "month": next_month
-    }
+    return {"year": next_year, "month": next_month}
 
 
 def get_prev_month(year, month):
+    # return error msg if month and year are not integers
+    if not isinstance(year, int) or not isinstance(month, int):
+        return "invalid format"
+
     # if january, start previous year on december
     if month == 1:
         prev_month = 12
@@ -59,10 +59,7 @@ def get_prev_month(year, month):
         prev_month = month - 1
         prev_year = year
 
-    return {
-        "year": prev_year, 
-        "month": prev_month
-    }
+    return {"year": prev_year, "month": prev_month}
 
 
 def validate_date(date):
@@ -78,7 +75,7 @@ def validate_date(date):
         month = int(d[1])
         day = int(d[2])
 
-        # month and day must not be more than 12/31 and year length must be 4 
+        # month and day must not be more than 12/31 and year length must be 4
         if month > 12 or day > 31 or not len(str(year)) == 4:
             raise ValueError
 
@@ -87,7 +84,7 @@ def validate_date(date):
             raise ValueError
 
     except ValueError:
-        return 'invalid'
+        return "invalid"
 
     # return list of integers
     return [year, month, day]
@@ -100,7 +97,7 @@ def validate_amount(amount):
 
     # get float from amount
     amount = re.sub(r"[^0-9.,]", "", amount)
-    amount = amount.replace("," , ".")
+    amount = amount.replace(",", ".")
     parts = amount.split(".")
     if len(parts) > 1:
         decimals = parts[-1]
@@ -114,7 +111,7 @@ def validate_amount(amount):
         a = float(amount)
     except ValueError:
         return "invalid"
-    
+
     # return float
     return a
 
@@ -141,4 +138,4 @@ def validate_repeat(repeat):
             return 1
         return r
     except:
-        return 'invalid'
+        return "invalid"

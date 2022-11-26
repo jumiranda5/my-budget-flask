@@ -10,11 +10,11 @@ def test_get_date():
     assert h.get_date()["month_name"] == month_name[today.month]
     assert h.get_date()["day"] == today.day
     assert h.get_date() == {
-            "year": today.year, 
-            "month": today.month, 
-            "month_name": month_name[today.month],
-            "day": today.day
-        }
+        "year": today.year,
+        "month": today.month,
+        "month_name": month_name[today.month],
+        "day": today.day,
+    }
 
 
 def test_get_month():
@@ -22,10 +22,22 @@ def test_get_month():
     assert h.get_month("2022", "0") == "invalid month"
     assert h.get_month("2022", "13") == "invalid month"
     assert h.get_month("2022", "11") == {
-            "year": 2022, 
-            "month": 11, 
-            "month_name": month_name[11]
-        }
+        "year": 2022,
+        "month": 11,
+        "month_name": month_name[11],
+    }
+
+
+def test_get_next_month():
+    assert h.get_next_month(2022, 11) == {"year": 2022, "month": 12}
+    assert h.get_next_month(2022, 12) == {"year": 2023, "month": 1}
+    assert h.get_next_month("2022", "12") == "invalid format"
+
+
+def test_get_prev_month():
+    assert h.get_prev_month(2022, 1) == {"year": 2021, "month": 12}
+    assert h.get_prev_month(2022, 11) == {"year": 2022, "month": 10}
+    assert h.get_next_month("2022", "12") == "invalid format"
 
 
 def test_validate_date():
