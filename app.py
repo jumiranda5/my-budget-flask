@@ -42,7 +42,7 @@ def add():
         amount = validate_amount(request.form["amount"])
         description = validate_text(request.form["description"])
         parcels = validate_repeat(request.form["repeat"])
-        type = "out"
+        type = request.form["type"]
         
         if request.form.get("payed"):
             payed = 1
@@ -50,7 +50,6 @@ def add():
             payed = 0
 
         # TODO: handle invalid data
-        # TODO: add type input
 
         if parcels > 1:
             # get last row id and increment to add as parcel_id

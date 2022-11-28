@@ -15,13 +15,19 @@
         <input type="date" id="date" name="date" value="{{today}}">
         <br>
         <br>
+        <input type="radio" id="out" name="type" value="out" checked>
+        <label for="out">Expense</label>
+        <input type="radio" id="in" name="type" value="in">
+        <label for="in">Income</label>
+        <br>
+        <br>
         <input id="amount" name="amount" placeholder="Amount" type="text">
         <br>
         <br>
         <input id="description" name="description" placeholder="Description" type="text">
         <br>
         <br>
-        <label for="payed">Payed</label>
+        <label for="payed" id="payed-label">Payed</label>
         <input type="checkbox" id="payed" name="payed" value="payed">
         <br>
         <br>

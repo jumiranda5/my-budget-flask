@@ -8,9 +8,21 @@
         <script>
             $(document).ready(function(){
                 $("input").click(function() {
-                    var id = $(this).attr("class");
-                    var isChecked = $(this).is(":checked")
-                    $.post("/edit-payed/" + id + "/" + isChecked);
+                    var name = $(this).attr("name")
+                    if (name === "edit-payed") {
+                        var id = $(this).attr("class")
+                        var isChecked = $(this).is(":checked")
+                        $.post("/edit-payed/" + id + "/" + isChecked)
+                    }
+                    else if (name == "type") {
+                        var id = $(this).attr("id")
+                        if (id === "in") {
+                            $("#payed-label").text("Received")
+                        }
+                        else {
+                            $("#payed-label").text("Payed")
+                        }
+                    }
                 });
             });
 
