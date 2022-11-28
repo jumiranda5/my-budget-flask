@@ -92,6 +92,25 @@ def add():
         return render_template("add.html", today=today_formatted)
 
 
+# Delete Transaction
+@app.route("/delete/<year>/<month>/<id>/<parcels>", methods=["POST"])
+def delete(year, month, id, parcels):
+    # if transaction is repeated => delete by parcel_id
+    if parcels == "1":
+        db.execute("DELETE FROM transactions WHERE id=?", id)
+    else:
+        db.execute("DELETE FROM transactions WHERE parcel_id=?", id)
+
+    # refresh page
+    return redirect(f"/month/{year}/{month}")
+
+
+# Edit Transaction
+@app.route("/edit/<id>")
+def edit(id):
+    return render_template("edit.html")
+
+
 # Month
 @app.route("/month/<year>/<month>")
 def month(year, month):
@@ -131,9 +150,3 @@ def categories(year, month):
 @app.route("/year/<year>")
 def year(year):
     return render_template("year.html", year=year)
-
-
-# Edit Transaction
-@app.route("/edit/<id>")
-def edit(id):
-    return render_template("edit.html")
