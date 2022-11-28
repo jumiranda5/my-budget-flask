@@ -1,14 +1,29 @@
+from cs50 import SQL
 from flask import Flask, render_template, request, redirect
 from helpers import get_date, get_month, get_prev_month, get_next_month
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
-from helpers_db import init_db_tables, insert_transaction, select_month_data
 
 
 app = Flask(__name__)
 
 
-# Create database tables if they don't exist
-init_db_tables()
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///budget.db")
+
+
+# Create transactions table if it doesn't exist
+db.execute('''CREATE TABLE IF NOT EXISTS transactions(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    year INTEGER NOT NULL,
+    month quantity INTEGER NOT NULL,
+    day INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    amount REAL NOT NULL,
+    type TEXT NOT NULL,
+    parcels INTEGER DEFAULT 1,
+    parcel INTEGER DEFAULT 1,
+    parcel_id INTEGER,
+    payed INTEGER DEFAULT 0)''')
 
 
 # Home
@@ -16,6 +31,65 @@ init_db_tables()
 def index():
     date = get_date()
     return render_template("index.html", date=date)
+
+
+# Add Transaction
+@app.route("/add", methods=["POST", "GET"])
+def add():
+    if request.method == "POST":
+        # Form data
+        date = validate_date(request.form["date"])
+        amount = validate_amount(request.form["amount"])
+        description = validate_text(request.form["description"])
+        parcels = validate_repeat(request.form["repeat"])
+        type = "out"
+        
+        if request.form.get("payed"):
+            payed = 1
+        else:
+            payed = 0
+
+        # TODO: handle invalid data
+        # TODO: add type input
+
+        if parcels > 1:
+            # get last row id and increment to add as parcel_id
+            last_id = db.execute("SELECT MAX(id) FROM transactions")
+            parcel_id = last_id[0]['MAX(id)'] + 1
+        else:
+            parcel_id = None
+
+        # Variable to store current date for next parcel
+        parcel_date = [date[0], date[1], date[2]]
+            
+        # insert each parcel
+        for i in range(parcels):
+            parcel = i + 1
+            year = parcel_date[0]
+            month = parcel_date[1]
+            day = parcel_date[2]
+
+            # if not first parcel => get next month
+            if i > 0:
+                d = get_next_month(parcel_date[0], parcel_date[1])
+                year = d["year"]
+                month = d["month"]
+
+                # update parcel current date
+                parcel_date[0] = year
+                parcel_date[1] = month
+
+            # Insert transaction
+            db.execute('''INSERT INTO transactions 
+                        (year, month, day, description, amount, type, parcels, parcel, parcel_id, payed) 
+                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                        year, month, day, description, amount, type, parcels, parcel, parcel_id, payed)
+
+        return redirect("/month/2022/11")
+    else:
+        today = get_date()
+        today_formatted = f"{today['year']}-{today['month']}-{today['day']}"
+        return render_template("add.html", today=today_formatted)
 
 
 # Month
@@ -26,10 +100,10 @@ def month(year, month):
     data = get_month(year, month)
 
     # Get month transactions from db
-    month_data = select_month_data(year, month)
+    rows = db.execute("SELECT * from transactions WHERE (year=? AND month=?)", year, month)
 
     # Add month transactions to data dict
-    data["rows"] = month_data
+    data["rows"] = rows
 
     # Get previous and next month from data => integers
     prev = get_prev_month(data['year'], data['month'])
@@ -57,40 +131,6 @@ def categories(year, month):
 @app.route("/year/<year>")
 def year(year):
     return render_template("year.html", year=year)
-
-
-# Add Transaction
-@app.route("/add", methods=["POST", "GET"])
-def add():
-    if request.method == "POST":
-        # Form checkbox
-        if request.form.get("fixed"):
-            fixed = 1
-        else:
-            fixed = 0
-
-        # Create dictionary with validated inputs
-        data = {
-            "date": validate_date(request.form["date"]),
-            "amount": validate_amount(request.form["amount"]),
-            "description": validate_text(request.form["description"]),
-            "tag": validate_text(request.form["tag"]),
-            "fixed": fixed,
-            "repeat": validate_repeat(request.form["repeat"]),
-            "type": "out",
-        }
-
-        # TODO: handle invalid data
-
-        # Insert data on db
-        msg = insert_transaction(data)
-        print(f"================> {msg}")
-
-        return redirect("/month/2022/11")
-    else:
-        today = get_date()
-        today_formatted = f"{today['year']}-{today['month']}-{today['day']}"
-        return render_template("add.html", today=today_formatted)
 
 
 # Edit Transaction
