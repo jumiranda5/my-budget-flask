@@ -111,6 +111,22 @@ def edit(id):
     return render_template("edit.html")
 
 
+# Edit Payed
+@app.route('/edit-payed/<id>/<checked>', methods=["POST"])
+def edit_payed(id, checked):
+    # If checkbox is checked, toggle payed to 1 (payed)
+    if checked == "true":
+        payed = 1
+    else:
+        # toggle payed to 0 (not payed)
+        payed = 0
+
+    # update db
+    db.execute("UPDATE transactions SET payed=? WHERE id=?", payed, id)
+
+    return "success"
+
+
 # Month
 @app.route("/month/<year>/<month>")
 def month(year, month):

@@ -51,7 +51,13 @@
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{row.payed}}</td>
+                        <td>
+                            {% if row.payed == 1 %}
+                                <input type="checkbox" class="{{row.id}}" id="edit-payed" name="payed" value="payed" checked >
+                            {% else %}
+                                <input type="checkbox" class="{{row.id}}" id="edit-payed" name="payed" value="payed">
+                            {% endif %}
+                        </td>
                         <td>{{row.parcel_id}}</td>
                         <td>
                             {% if row.parcels > 1 %}
