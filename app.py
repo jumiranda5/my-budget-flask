@@ -73,6 +73,7 @@ def add():
                 d = get_next_month(parcel_date[0], parcel_date[1])
                 year = d["year"]
                 month = d["month"]
+                payed = 0
 
                 # update parcel current date
                 parcel_date[0] = year
