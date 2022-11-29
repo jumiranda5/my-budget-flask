@@ -38,36 +38,21 @@ def index():
 def add():
     if request.method == "POST":
         # Form data
-        type = request.form["type"]
-        date = validate_date(request.form["date"])
-        description = validate_text(request.form["description"])
-        parcels = validate_repeat(request.form["repeat"])
-
-        # Make amount negative if expense
-        if type == "out":
-            amount = f"-{request.form['amount']}"
-        else:
-            amount = request.form["amount"]
-
-        amount = validate_amount(amount)
-        
-        # payed checkbox
-        if request.form.get("payed"):
-            payed = 1
-        else:
-            payed = 0
+        data = get_transaction_form_data()
+        date = data['date']
+        parcels = data['parcels']
+        description = data['description']
+        amount = data['amount']
+        type = data['type']
+        payed = data['payed']
 
         # TODO: handle invalid data
 
-        if parcels > 1:
-            # get last row id and increment to add as parcel_id
-            last_id = db.execute("SELECT MAX(id) FROM transactions")
-            parcel_id = last_id[0]['MAX(id)'] + 1
-        else:
-            parcel_id = None
-
         # Variable to store current date for next parcel
         parcel_date = [date[0], date[1], date[2]]
+
+        # Variable to store parcel id (id from first parcel)
+        parcel_id = 0
             
         # insert each parcel
         for i in range(parcels):
@@ -88,10 +73,17 @@ def add():
                 parcel_date[1] = month
 
             # Insert transaction
-            db.execute('''INSERT INTO transactions 
-                        (year, month, day, description, amount, type, parcels, parcel, parcel_id, payed) 
-                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                        year, month, day, description, amount, type, parcels, parcel, parcel_id, payed)
+            id = db.execute('''INSERT INTO transactions 
+                               (year, month, day, description, amount, type, parcels, parcel, payed) 
+                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                                year, month, day, description, amount, type, parcels, parcel, payed)
+
+            # if first parcel => update parcel_id value
+            if i == 0:
+                parcel_id = id
+
+            # update parcel id
+            db.execute("UPDATE transactions SET parcel_id=? WHERE id=?", parcel_id, id)
 
         return redirect("/month/2022/11")
     else:
@@ -155,6 +147,9 @@ def edit(id):
                 new_date[1] = new_month['month']
 
         else:
+            # Transaction only had one parcel
+            # Parcel count increased
+            # parcel count decreased
             ...
 
         # TODO => get previous route
