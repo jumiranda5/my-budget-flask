@@ -116,15 +116,53 @@ def delete(year, month, id, parcels):
 # Edit Transaction
 @app.route("/edit/<id>", methods=["POST", "GET"])
 def edit(id):
-    if request.method == "POST":
-        ...
-    else:
-        # Get transaction to edit
-        row = db.execute("SELECT * FROM transactions WHERE id=?", id)
-        print(row)
 
+    # Get transaction to edit
+    row = db.execute("SELECT * FROM transactions WHERE id=?", id)
+
+    if request.method == "POST":
+        # Form data
+        data = get_transaction_form_data()
+        date = data['date']
+        print(data)
+
+        # If parcels count did not change
+        if data['parcels'] == row[0]['parcels']:
+            # Parcels = 1 => update single transaction
+            db.execute("""UPDATE transactions
+                          SET year=?, month=?, day=?, description=?, amount=?, type=?, payed=?
+                          WHERE id=?""",
+                          date[0], date[1], date[2], data['description'], data['amount'], data['type'], data['payed'], row[0]['id'])
+
+            # Parcels > 1  and date didn't change => update all parcels
+            db.execute("""UPDATE transactions
+                          SET description=?, amount=?, type=?, payed=?
+                          WHERE parcel_id=?""",
+                          data['description'], data['amount'], data['type'], data['payed'], row[0]['parcel_id'])
+
+            # Parcels > 1  and date changed => update all parcels dates
+            new_date = data['date']
+            for i in range(data['parcels']):
+                parcel = i + 1
+                db.execute("""UPDATE transactions
+                              SET year=?, month=?, day=?
+                              WHERE parcel_id=? AND parcel=?""",
+                              new_date[0], new_date[1], new_date[2], row[0]['parcel_id'], parcel)
+
+                # update new date
+                new_month = get_next_month(new_date[0], new_date[1])
+                new_date[0] = new_month['year']
+                new_date[1] = new_month['month']
+
+        else:
+            ...
+
+        # TODO => get previous route
+        return redirect("/month/2022/11") 
+    else:
         # Data dict
         data = {
+            "id": row[0]['id'],
             "date": f"{row[0]['year']}-{row[0]['month']}-{row[0]['day']}",
             "type": row[0]['type'],
             "amount": row[0]['amount'],
@@ -202,3 +240,35 @@ def categories(year, month):
 @app.route("/year/<year>")
 def year(year):
     return render_template("year.html", year=year)
+
+
+# Get add / edit form data
+def get_transaction_form_data():
+    # Form data
+    type = request.form["type"]
+    date = validate_date(request.form["date"])
+    description = validate_text(request.form["description"])
+    parcels = validate_repeat(request.form["repeat"])
+
+    # Make amount negative if expense
+    if type == "out":
+        amount = f"-{request.form['amount']}"
+    else:
+        amount = request.form["amount"]
+
+    amount = validate_amount(amount)
+    
+    # payed checkbox
+    if request.form.get("payed"):
+        payed = 1
+    else:
+        payed = 0
+
+    return {
+        "type": type,
+        "date": date,
+        "description": description,
+        "parcels": parcels,
+        "amount": amount,
+        "payed": payed
+    }
