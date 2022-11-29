@@ -145,8 +145,19 @@ def month(year, month):
     # Get month transactions from db
     rows = db.execute("SELECT * from transactions WHERE (year=? AND month=?)", year, month)
 
-    # Add month transactions to data dict
+    # Get transactions balance
+    total = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?)", year, month)
+    out = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "out")
+    income = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "in")
+    balance = {
+        "total": total[0]['SUM(amount)'],
+        "out": out[0]['SUM(amount)'],
+        "income": income[0]['SUM(amount)']
+    }
+
+    # Add month transactions and balance to data dict
     data["rows"] = rows
+    data["balance"] = balance
 
     # Get previous and next month from data => integers
     prev = get_prev_month(data['year'], data['month'])
