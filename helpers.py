@@ -96,7 +96,7 @@ def validate_amount(amount):
         amount = "0.0"
 
     # get float from amount
-    amount = re.sub(r"[^0-9.,]", "", amount)
+    amount = re.sub(r"[^0-9.,-]", "", amount)
     amount = amount.replace(",", ".")
     parts = amount.split(".")
     if len(parts) > 1:

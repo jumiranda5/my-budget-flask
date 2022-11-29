@@ -38,12 +38,20 @@ def index():
 def add():
     if request.method == "POST":
         # Form data
+        type = request.form["type"]
         date = validate_date(request.form["date"])
-        amount = validate_amount(request.form["amount"])
         description = validate_text(request.form["description"])
         parcels = validate_repeat(request.form["repeat"])
-        type = request.form["type"]
+
+        # Make amount negative if expense
+        if type == "out":
+            amount = f"-{request.form['amount']}"
+        else:
+            amount = request.form["amount"]
+
+        amount = validate_amount(amount)
         
+        # payed checkbox
         if request.form.get("payed"):
             payed = 1
         else:

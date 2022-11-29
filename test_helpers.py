@@ -58,6 +58,7 @@ def test_validate_amount():
     assert h.validate_amount("10.000,00") == 10000.0
     assert h.validate_amount("$10,000.00%!") == 10000.0
     assert h.validate_amount("100") == 100.0
+    assert h.validate_amount("-100") == -100.0
 
 
 def test_validate_text():
