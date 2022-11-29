@@ -8,4 +8,50 @@
 
     <h1>Edit Page</h1>
 
+    <form action="/add" method="post">
+
+        <!-- TODO -->
+
+        <input type="date" id="date" name="date" value="{{data.date}}">
+        <br>
+        <br>
+
+        {% if data.type == "out" %}
+            <input type="radio" id="out" name="type" value="out" checked>
+            <label for="out">Expense</label>
+            <input type="radio" id="in" name="type" value="in">
+            <label for="in">Income</label>            
+        {% else %}
+            <input type="radio" id="out" name="type" value="out">
+            <label for="out">Expense</label>
+            <input type="radio" id="in" name="type" value="in" checked>
+            <label for="in">Income</label>
+        {% endif %}
+        <br>
+        <br>
+
+        <input id="amount" name="amount" placeholder="Amount" type="text" value="{{data.amount}}">
+        <br>
+        <br>
+
+        <input id="description" name="description" placeholder="Description" type="text" value="{{data.description}}">
+        <br>
+        <br>
+
+        <label for="payed" id="payed-label">Payed</label>
+        {% if data.payed == 1 %}
+            <input type="checkbox" id="payed" name="payed" value="payed" checked>
+        {% else %}
+            <input type="checkbox" id="payed" name="payed" value="payed">
+        {% endif %}
+        <br>
+        <br>
+        
+        <input id="repeat" name="repeat" placeholder="Repeat" type="number" value="{{data.parcels}}">
+        <br>
+        <br>
+
+        <button type="submit">Edit</button>
+    </form>
+
 {% endblock %}

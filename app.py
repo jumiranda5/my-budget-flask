@@ -114,9 +114,26 @@ def delete(year, month, id, parcels):
 
 
 # Edit Transaction
-@app.route("/edit/<id>")
+@app.route("/edit/<id>", methods=["POST", "GET"])
 def edit(id):
-    return render_template("edit.html")
+    if request.method == "POST":
+        ...
+    else:
+        # Get transaction to edit
+        row = db.execute("SELECT * FROM transactions WHERE id=?", id)
+        print(row)
+
+        # Data dict
+        data = {
+            "date": f"{row[0]['year']}-{row[0]['month']}-{row[0]['day']}",
+            "type": row[0]['type'],
+            "amount": row[0]['amount'],
+            "description": row[0]['description'],
+            "payed": row[0]['payed'],
+            "parcels": row[0]['parcels']
+        }
+
+        return render_template("edit.html", data=data)
 
 
 # Edit Payed
