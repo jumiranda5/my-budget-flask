@@ -116,6 +116,13 @@ def edit(id):
 
     # Get transaction to edit
     row = db.execute("SELECT * FROM transactions WHERE id=?", id)
+    date = f"{row[0]['year']}-{row[0]['month']:02d}-{row[0]['day']:02d}"
+
+    # if transaction has parcels => get first parcel
+    if row[0]['parcels'] > 1:
+        first_parcel = db.execute("SELECT MIN(id) FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
+        d = db.execute("SELECT year, month, day FROM transactions WHERE id=?", first_parcel[0]['MIN(id)'])
+        date = f"{d[0]['year']}-{d[0]['month']:02d}-{d[0]['day']:02d}"
 
     if request.method == "POST":
         # Form data
@@ -152,24 +159,23 @@ def edit(id):
                               WHERE id=? AND parcels=?""",
                               new_date[0], new_date[1], new_date[2], parcel_row['id'], parcels)
 
+                # update last date
+                last_date = new_date
+
                 # update new date
                 new_month = get_next_month(new_date[0], new_date[1])
                 new_date[0] = new_month['year']
                 new_date[1] = new_month['month']
 
-                # update last date
-                last_date = new_date
 
         # If parcels count changed
         if not parcels == row[0]['parcels']:
             # Number of parcels to add/delete
             extra = parcels - row[0]['parcels']
-            print(f"===========> extra: {extra}")
 
             if extra > 0:
                 # Parcel count increased => get last transaction date
-                new_month = get_next_month(last_date[0], last_date[1])
-                new_date = [new_month['year'], new_month['month'], date[2]]
+                new_date = [last_date[0], last_date[1], date[2]]
                 new_parcel = row[0]['parcels'] + 1
 
                 for _ in range(extra):
@@ -193,7 +199,6 @@ def edit(id):
                     # get last transaction id with parcel_id from row
                     last_id = db.execute("SELECT MAX(id) FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
                     id = last_id[0]['MAX(id)']
-                    print(f'============> id: {id}')
 
                     # Delete transaction
                     db.execute("DELETE FROM transactions WHERE id=?", id)
@@ -207,15 +212,13 @@ def edit(id):
         # Data dict
         data = {
             "id": row[0]['id'],
-            "date": f"{row[0]['year']}-{row[0]['month']:02d}-{row[0]['day']:02d}",
+            "date": date,
             "type": row[0]['type'],
             "amount": abs(row[0]['amount']),
             "description": row[0]['description'],
             "payed": row[0]['payed'],
             "parcels": row[0]['parcels']
         }
-
-        print(f"===============> date: {data['date']}")
 
         return render_template("edit.html", data=data)
 
