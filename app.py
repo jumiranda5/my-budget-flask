@@ -45,52 +45,44 @@ def add():
         # Form data
         data = get_transaction_form_data()
         date = data['date']
-        parcels = data['parcels']
-        description = data['description']
-        amount = data['amount']
-        type = data['type']
         payed = data['payed']
 
         # TODO: handle invalid data
 
-        # Variable to store current date for next parcel
+        # Variable to store current parcel
         parcel_date = [date[0], date[1], date[2]]
-
-        # Variable to store parcel id (id from first parcel)
         parcel_id = 0
             
         # insert each parcel
-        for i in range(parcels):
+        for i in range(data['parcels']):
             parcel = i + 1
-            year = parcel_date[0]
-            month = parcel_date[1]
-            day = parcel_date[2]
 
             # if not first parcel => get next month
             if i > 0:
                 d = get_next_month(parcel_date[0], parcel_date[1])
-                year = d["year"]
-                month = d["month"]
+                parcel_date = [d["year"], d["month"], date[2]]
                 payed = 0
 
-                # update parcel current date
-                parcel_date[0] = year
-                parcel_date[1] = month
-
             # Insert transaction
-            id = db.execute('''INSERT INTO transactions 
-                               (year, month, day, description, amount, type, parcels, parcel, payed) 
-                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                                year, month, day, description, amount, type, parcels, parcel, payed)
+            id = insert_transaction(parcel_date[0], 
+                                    parcel_date[1], 
+                                    parcel_date[2], 
+                                    data['description'], 
+                                    data['amount'], 
+                                    data['type'], 
+                                    data['parcels'], 
+                                    parcel, 
+                                    None, 
+                                    payed)
 
             # if first parcel => update parcel_id value
             if i == 0:
                 parcel_id = id
 
-            # update parcel id
+            # update parcel_id
             db.execute("UPDATE transactions SET parcel_id=? WHERE id=?", parcel_id, id)
 
-        return redirect("/month/2022/11")
+        return redirect(f"/month/{date[0]}/{date[1]}")
     else:
         today = get_date()
         today_formatted = f"{today['year']}-{today['month']}-{today['day']}"
@@ -133,40 +125,21 @@ def edit(id):
         amount = data['amount']
         type = data['type']
 
-        # Variable to store last parcel date
-        last_date = date
-
         # Update transactions values
         if row[0]['parcels'] == 1:
             # If original parcel count is 1 => update all values
-            db.execute("""UPDATE transactions
-                          SET year=?, month=?, day=?, description=?, amount=?, type=?, parcels=?
-                          WHERE id=?""",
-                          date[0], date[1], date[2], description, amount, type, parcels, row[0]['id'])
+            update_single_transaction(date[0], date[1], date[2], description, amount, type, parcels, row[0]['id'])
         else:
-            # Update without updating date
-            db.execute("""UPDATE transactions
-                          SET description=?, amount=?, type=?, parcels=?
-                          WHERE parcel_id=?""",
-                          description, amount, type, parcels, row[0]['parcel_id'])
-            
-            # Parcels > 1  and date changed => update all parcels dates
-            new_date = data['date']
-            parcels_rows = db.execute("SELECT * FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
-            for parcel_row in parcels_rows:
-                db.execute("""UPDATE transactions
-                              SET year=?, month=?, day=?
-                              WHERE id=? AND parcels=?""",
-                              new_date[0], new_date[1], new_date[2], parcel_row['id'], parcels)
-
-                # update last date
-                last_date = new_date
-
-                # update new date
-                new_month = get_next_month(new_date[0], new_date[1])
-                new_date[0] = new_month['year']
-                new_date[1] = new_month['month']
-
+            # Update all parcels
+            original_date = [row[0]['year'], row[0]['month'], row[0]['day']]
+            last_parcel_date = update_transaction_parcels(
+                        original_date, 
+                        date, 
+                        description, 
+                        amount, 
+                        type, 
+                        parcels, 
+                        row[0]['parcel_id'])
 
         # If parcels count changed
         if not parcels == row[0]['parcels']:
@@ -175,15 +148,21 @@ def edit(id):
 
             if extra > 0:
                 # Parcel count increased => get last transaction date
-                new_date = [last_date[0], last_date[1], date[2]]
+                new_date = [last_parcel_date[0], last_parcel_date[1], date[2]]
                 new_parcel = row[0]['parcels'] + 1
 
                 for _ in range(extra):
                     # Insert transaction
-                    db.execute('''INSERT INTO transactions 
-                               (year, month, day, description, amount, type, parcels, parcel, parcel_id) 
-                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                                new_date[0], new_date[1], new_date[2], description, amount, type, parcels, new_parcel, row[0]['parcel_id'])
+                    insert_transaction(new_date[0], 
+                                       new_date[1], 
+                                       new_date[2], 
+                                       description, 
+                                       amount, 
+                                       type, 
+                                       parcels, 
+                                       new_parcel, 
+                                       row[0]['parcel_id'], 
+                                       data['payed'])
                     
                     # Update new_date
                     new_month = get_next_month(new_date[0], new_date[1])
@@ -196,6 +175,7 @@ def edit(id):
                 # parcel count decreased => delete extra transactions
                 # use abs() to get positive integer from negative extra
                 for _ in range(abs(extra)):
+
                     # get last transaction id with parcel_id from row
                     last_id = db.execute("SELECT MAX(id) FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
                     id = last_id[0]['MAX(id)']
@@ -290,7 +270,10 @@ def year(year):
     return render_template("year.html", year=year)
 
 
-# Get add / edit form data
+# -------------------------------------------------
+#           Get add / edit form data
+# -------------------------------------------------
+
 def get_transaction_form_data():
     # Form data
     type = request.form["type"]
@@ -320,3 +303,53 @@ def get_transaction_form_data():
         "amount": amount,
         "payed": payed
     }
+
+
+# -------------------------------------------------
+#                    DATABASE
+# -------------------------------------------------
+
+def insert_transaction(year, month, day, description, amount, type, parcels, parcel, parcel_id, payed):
+    id = db.execute('''INSERT INTO transactions 
+                               (year, month, day, description, amount, type, parcels, parcel, parcel_id, payed) 
+                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                                year, month, day, description, amount, type, parcels, parcel, parcel_id, payed)
+    return id
+
+
+def update_single_transaction(year, month, day, description, amount, type, parcels, parcel_id):
+    db.execute("""UPDATE transactions
+                          SET year=?, month=?, day=?, description=?, amount=?, type=?, parcels=?
+                          WHERE id=?""",
+                          year, month, day, description, amount, type, parcels, parcel_id)
+
+
+def update_transaction_parcels(date, new_date, description, amount, type, parcels, parcel_id):
+    # Update without updating date
+    db.execute("""UPDATE transactions
+                    SET description=?, amount=?, type=?, parcels=?
+                    WHERE parcel_id=?""",
+                    description, amount, type, parcels, parcel_id)
+    
+    last_date = date
+
+    if not date == new_date:
+        # update all parcels dates
+        parcels_rows = db.execute("SELECT * FROM transactions WHERE parcel_id=?", parcel_id)
+        for parcel_row in parcels_rows:
+            db.execute("""UPDATE transactions
+                            SET year=?, month=?, day=?
+                            WHERE id=? AND parcels=?""",
+                            new_date[0], new_date[1], new_date[2], parcel_row['id'], parcels)
+
+            # update last date
+            last_date = new_date
+
+            # update new date
+            new_month = get_next_month(new_date[0], new_date[1])
+            new_date[0] = new_month['year']
+            new_date[1] = new_month['month']
+
+    return last_date
+
+
