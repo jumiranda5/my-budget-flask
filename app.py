@@ -206,8 +206,7 @@ def edit(id):
                     # update parcels count
                     db.execute("UPDATE transactions SET parcels=? WHERE parcel_id=?", parcels, row[0]['parcel_id'])
 
-        # TODO => get previous route
-        return redirect("/month/2022/11") 
+        return redirect(f"/month/{row[0]['year']}/{row[0]['month']}") 
     else:
         # Data dict
         data = {
