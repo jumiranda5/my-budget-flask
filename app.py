@@ -26,6 +26,11 @@ db.execute('''CREATE TABLE IF NOT EXISTS transactions(
     payed INTEGER DEFAULT 0)''')
 
 
+full_db = db.execute("SELECT * FROM transactions")
+for row in full_db:
+    print(f"{row['id']} | {row['year']} | {row['month']} | {row['day']} | {row['description']} | {row['amount']} | {row['parcels']} | {row['parcel']} | {row['parcel_id']}")
+
+
 # Home
 @app.route("/")
 def index():
@@ -116,41 +121,85 @@ def edit(id):
         # Form data
         data = get_transaction_form_data()
         date = data['date']
-        print(data)
+        parcels = data['parcels']
+        description = data['description']
+        amount = data['amount']
+        type = data['type']
 
-        # If parcels count did not change
-        if data['parcels'] == row[0]['parcels']:
-            # Parcels = 1 => update single transaction
+        # Variable to store last parcel date
+        last_date = date
+
+        # Update transactions values
+        if row[0]['parcels'] == 1:
+            # If original parcel count is 1 => update all values
             db.execute("""UPDATE transactions
-                          SET year=?, month=?, day=?, description=?, amount=?, type=?, payed=?
+                          SET year=?, month=?, day=?, description=?, amount=?, type=?, parcels=?
                           WHERE id=?""",
-                          date[0], date[1], date[2], data['description'], data['amount'], data['type'], data['payed'], row[0]['id'])
-
-            # Parcels > 1  and date didn't change => update all parcels
+                          date[0], date[1], date[2], description, amount, type, parcels, row[0]['id'])
+        else:
+            # Update without updating date
             db.execute("""UPDATE transactions
-                          SET description=?, amount=?, type=?, payed=?
+                          SET description=?, amount=?, type=?, parcels=?
                           WHERE parcel_id=?""",
-                          data['description'], data['amount'], data['type'], data['payed'], row[0]['parcel_id'])
-
+                          description, amount, type, parcels, row[0]['parcel_id'])
+            
             # Parcels > 1  and date changed => update all parcels dates
             new_date = data['date']
-            for i in range(data['parcels']):
-                parcel = i + 1
+            parcels_rows = db.execute("SELECT * FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
+            for parcel_row in parcels_rows:
                 db.execute("""UPDATE transactions
                               SET year=?, month=?, day=?
-                              WHERE parcel_id=? AND parcel=?""",
-                              new_date[0], new_date[1], new_date[2], row[0]['parcel_id'], parcel)
+                              WHERE id=? AND parcels=?""",
+                              new_date[0], new_date[1], new_date[2], parcel_row['id'], parcels)
 
                 # update new date
                 new_month = get_next_month(new_date[0], new_date[1])
                 new_date[0] = new_month['year']
                 new_date[1] = new_month['month']
 
-        else:
-            # Transaction only had one parcel
-            # Parcel count increased
-            # parcel count decreased
-            ...
+                # update last date
+                last_date = new_date
+
+        # If parcels count changed
+        if not parcels == row[0]['parcels']:
+            # Number of parcels to add/delete
+            extra = parcels - row[0]['parcels']
+            print(f"===========> extra: {extra}")
+
+            if extra > 0:
+                # Parcel count increased => get last transaction date
+                new_month = get_next_month(last_date[0], last_date[1])
+                new_date = [new_month['year'], new_month['month'], date[2]]
+                new_parcel = row[0]['parcels'] + 1
+
+                for _ in range(extra):
+                    # Insert transaction
+                    db.execute('''INSERT INTO transactions 
+                               (year, month, day, description, amount, type, parcels, parcel, parcel_id) 
+                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                                new_date[0], new_date[1], new_date[2], description, amount, type, parcels, new_parcel, row[0]['parcel_id'])
+                    
+                    # Update new_date
+                    new_month = get_next_month(new_date[0], new_date[1])
+                    new_date[0] = new_month['year']
+                    new_date[1] = new_month['month']
+
+                    # Update new_parcel
+                    new_parcel = new_parcel + 1
+            else:
+                # parcel count decreased => delete extra transactions
+                # use abs() to get positive integer from negative extra
+                for _ in range(abs(extra)):
+                    # get last transaction id with parcel_id from row
+                    last_id = db.execute("SELECT MAX(id) FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
+                    id = last_id[0]['MAX(id)']
+                    print(f'============> id: {id}')
+
+                    # Delete transaction
+                    db.execute("DELETE FROM transactions WHERE id=?", id)
+
+                    # update parcels count
+                    db.execute("UPDATE transactions SET parcels=? WHERE parcel_id=?", parcels, row[0]['parcel_id'])
 
         # TODO => get previous route
         return redirect("/month/2022/11") 
@@ -158,13 +207,15 @@ def edit(id):
         # Data dict
         data = {
             "id": row[0]['id'],
-            "date": f"{row[0]['year']}-{row[0]['month']}-{row[0]['day']}",
+            "date": f"{row[0]['year']}-{row[0]['month']:02d}-{row[0]['day']:02d}",
             "type": row[0]['type'],
-            "amount": row[0]['amount'],
+            "amount": abs(row[0]['amount']),
             "description": row[0]['description'],
             "payed": row[0]['payed'],
             "parcels": row[0]['parcels']
         }
+
+        print(f"===============> date: {data['date']}")
 
         return render_template("edit.html", data=data)
 
