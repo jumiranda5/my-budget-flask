@@ -278,25 +278,6 @@ def month(year, month):
     return render_template("month.html", data=data, prev=prev, next=next)
 
 
-# Pending
-@app.route("/pending")
-def pending():
-    return render_template("pending.html")
-
-
-# Categories
-@app.route("/categories/<year>/<month>")
-def categories(year, month):
-    data = get_month(year, month)
-    return render_template("categories.html", data=data)
-
-
-# Year
-@app.route("/year/<year>")
-def year(year):
-    return render_template("year.html", year=year)
-
-
 # -------------------------------------------------
 #                     AJAX
 # -------------------------------------------------
