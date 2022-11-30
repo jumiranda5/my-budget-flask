@@ -31,8 +31,18 @@
     <!-- Year -->
     <div>
         <a href="/year/{{date.year}}">Click to open year</a>
-        <p>year</p>
-        <p>Graphic with year data</p>
+        <p>Year Balance</p>
+        <h3>{{year.balance}}</h3>
+        <ul>
+            {% for row in year.months %}
+                <li>
+                    <a href="/month/{{year.year}}/{{row.month}}">
+                        <h4>{{row.month_name}}</h4>
+                        <p>{{row.balance.total}}</p>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 
     <br>

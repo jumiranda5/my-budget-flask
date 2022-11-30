@@ -1,6 +1,6 @@
 from cs50 import SQL
 from flask import Flask, render_template, request, redirect
-from helpers import get_date, get_month, get_prev_month, get_next_month
+from helpers import get_date, get_month, get_prev_month, get_next_month, get_year
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
 
 
@@ -26,11 +26,6 @@ db.execute('''CREATE TABLE IF NOT EXISTS transactions(
     payed INTEGER DEFAULT 0)''')
 
 
-full_db = db.execute("SELECT * FROM transactions")
-for row in full_db:
-    print(f"{row['id']} | {row['year']} | {row['month']} | {row['day']} | {row['description']} | {row['amount']} | {row['parcels']} | {row['parcel']} | {row['parcel_id']}")
-
-
 # Home
 @app.route("/")
 def index():
@@ -40,6 +35,21 @@ def index():
     # Get month balance
     balance = get_month_balance(date['year'], date['month'])
 
+    # Year
+    year_months = get_year()
+    year_balance = db.execute("SELECT SUM(amount) FROM transactions WHERE year = ?", date["year"])
+    year_balance = year_balance[0]['SUM(amount)']
+
+    for row in year_months:
+        row_balance = get_month_balance(date['year'], row['month'])
+        row['balance'] = row_balance
+
+    year = {
+        "year": date["year"],
+        "months": year_months,
+        "balance": year_balance
+    }
+    
     # Get not payed transactions (pending) and sum
     not_payed = db.execute("SELECT * FROM transactions WHERE payed=0 AND (year <= ? AND month <= ? AND day <= ?)", 
         date["year"], date["month"], date["day"])
@@ -59,7 +69,7 @@ def index():
         "total": pending_total
     }
 
-    return render_template("index.html", date=date, balance=balance, pending=pending)
+    return render_template("index.html", date=date, balance=balance, year=year, pending=pending)
 
 
 # Add Transaction

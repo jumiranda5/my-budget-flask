@@ -40,6 +40,11 @@ def test_get_prev_month():
     assert h.get_next_month("2022", "12") == "invalid format"
 
 
+def test_get_year():
+    assert h.get_year()[0] == {'month': 1, 'month_name': 'January'}
+    assert h.get_year()[11] == {'month': 12, 'month_name': 'December'}
+
+
 def test_validate_date():
     assert h.validate_date("22-11-24") == "invalid"
     assert h.validate_date("24-11-2022") == "invalid"

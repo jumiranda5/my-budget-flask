@@ -1,5 +1,5 @@
 from datetime import datetime
-from calendar import month_name
+from calendar import month_name, month_abbr
 import re
 
 
@@ -60,6 +60,24 @@ def get_prev_month(year, month):
         prev_year = year
 
     return {"year": prev_year, "month": prev_month}
+
+
+def get_year():
+
+    year = []
+
+    for i in range(12):
+        m = i + 1
+        # Date dictionary
+        month = {
+            "month": m,
+            "month_name": month_name[m],
+        }
+
+        year.append(month)
+
+    return year
+
 
 
 def validate_date(date):
