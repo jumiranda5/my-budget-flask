@@ -36,19 +36,7 @@ def index():
     balance = get_month_balance(date['year'], date['month'])
 
     # Year
-    year_months = get_year()
-    year_balance = db.execute("SELECT SUM(amount) FROM transactions WHERE year = ?", date["year"])
-    year_balance = year_balance[0]['SUM(amount)']
-
-    for row in year_months:
-        row_balance = get_month_balance(date['year'], row['month'])
-        row['balance'] = row_balance
-
-    year = {
-        "year": date["year"],
-        "months": year_months,
-        "balance": year_balance
-    }
+    year = get_year_balance(date["year"])
     
     # Get not payed transactions (pending) and sum
     not_payed = db.execute("SELECT * FROM transactions WHERE payed=0 AND (year <= ? AND month <= ? AND day <= ?)", 
@@ -309,9 +297,42 @@ def month_balance(year, month, action):
 
     return response
 
+
+@app.route("/year-balance/<year>/<action>")
+def year_balance(year, action):
+
+    # Get date dict
+    date = get_month(year, "1")
+
+    # get next year
+    if action == "prev":
+        next_year = date['year'] - 1
+    else:
+        next_year = date['year'] + 1
+    
+    # return year object
+    return get_year_balance(next_year)
+
 # -------------------------------------------------
 #                    REUSABLE
 # -------------------------------------------------
+
+def get_year_balance(year):
+    
+    year_months = get_year()
+    year_balance = db.execute("SELECT SUM(amount) FROM transactions WHERE year = ?", year)
+    year_balance = year_balance[0]['SUM(amount)']
+
+    for row in year_months:
+        row_balance = get_month_balance(year, row['month'])
+        row['balance'] = row_balance
+
+    return {
+        "year": year,
+        "months": year_months,
+        "balance": year_balance
+    }
+
 
 def get_month_balance(year, month):
     # Get transactions balance

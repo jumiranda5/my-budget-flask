@@ -11,10 +11,10 @@
     <!-- Month -->
     <div id="month-balance-div">
         <a id="month-link" href="/month/{{date.year}}/{{date.month}}">Click to open month</a>
-        <h1 id="year">{{date.year}}</h1>
+        <h1 id="month-year">{{date.year}}</h1>
         <h2 id="month">{{date.month_name}}</h2>
 
-        <input type="hidden" id="current-year" value="{{date.year}}">
+        <input type="hidden" id="current-month-year" value="{{date.year}}">
         <input type="hidden" id="current-month" value="{{date.month}}">
 
         <button id="prev-month" type="button">Previous</button>
@@ -31,12 +31,19 @@
     <!-- Year -->
     <div>
         <a href="/year/{{date.year}}">Click to open year</a>
+        <h2 id="year">{{date.year}}</h2>
         <p>Year Balance</p>
-        <h3>{{year.balance}}</h3>
+        <h3 id="year-balance">{{year.balance}}</h3>
+
+        <input type="hidden" id="current-year" value="{{date.year}}">
+
+        <button id="prev-year" type="button">Previous</button>
+        <button id="next-year" type="button">Next</button>
+
         <ul>
             {% for row in year.months %}
                 <li>
-                    <a href="/month/{{year.year}}/{{row.month}}">
+                    <a class="year-month" href="/month/{{year.year}}/{{row.month}}">
                         <h4>{{row.month_name}}</h4>
                         <p>{{row.balance.total}}</p>
                     </a>

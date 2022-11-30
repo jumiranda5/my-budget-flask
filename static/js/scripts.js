@@ -19,10 +19,10 @@ $(document).ready(function(){
         }
     });
 
-    // Index page update month div on prev button click
+    // Home page => update month div on prev button click
     $("#prev-month").click(function(){
         
-        var year = $("#current-year").val()
+        var year = $("#current-month-year").val()
         var month = $("#current-month").val()
         path = "/balance/" + year + "/" + month + "/prev"
 
@@ -31,7 +31,7 @@ $(document).ready(function(){
         });
     })
 
-    // Index page update month div on next button click
+    // Home page => update month div on next button click
     $("#next-month").click(function(){
         
         var year = $("#current-year").val()
@@ -46,9 +46,9 @@ $(document).ready(function(){
     // Update month div
     function update_month(data) {
         
-        $("#current-year").val(data.date.year)
+        $("#current-month-year").val(data.date.year)
         $("#current-month").val(data.date.month)
-        $("#year").text(data.date.year)
+        $("#month-year").text(data.date.year)
         $("#month").text(data.date.month_name)
         $("#month-total").text(data.balance.total)
         $("#month-income").text(data.balance.income)
@@ -56,5 +56,38 @@ $(document).ready(function(){
 
         var newUrl = "/month/" + data.date.year + "/" + data.date.month 
         $("#month-link").attr("href", newUrl);
+    }
+
+    // Home page => update year div on prev button click
+    $("#prev-year").click(function(){
+        
+        var year = $("#current-month-year").val()
+        path = "/year-balance/" + year + "/prev"
+
+        $.get(path, function(data, status){
+            update_year(data)
+        });
+    })
+
+    // Home page => update year div on next button click
+    $("#next-year").click(function(){
+        
+        var year = $("#current-year").val()
+        path = "/year-balance/" + year + "/next"
+
+        $.get(path, function(data, status){
+            update_year(data)
+        });
+    })
+
+    // Update year div
+    function update_year(data) {    
+        $("#current-year").val(data.year)
+        $("#year").text(data.year)
+        $("#year-balance").text(data.balance)
+
+        $(".year-month > p").each(function(i) {
+            $(this).text(data.months[i].balance.total);
+        });
     }
 });
