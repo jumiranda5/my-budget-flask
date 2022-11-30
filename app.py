@@ -269,6 +269,37 @@ def year(year):
 
 
 # -------------------------------------------------
+#                     AJAX
+# -------------------------------------------------
+
+@app.route("/balance/<year>/<month>/<action>")
+def month_balance(year, month, action):
+
+    # Get month dict
+    date = get_month(year, month)
+
+    # Get previous or next
+    if action == "prev":
+        next = get_prev_month(date['year'], date['month'])
+    else:
+        next = get_next_month(date['year'], date['month'])
+
+    # Get prev month dict
+    date = get_month(next['year'], next['month'])
+
+    print(date)
+
+    # Get month balance
+    balance = get_month_balance(next['year'], next['month'])
+
+    response = {
+        "date": date,
+        "balance": balance
+    }
+
+    return response
+
+# -------------------------------------------------
 #                    REUSABLE
 # -------------------------------------------------
 

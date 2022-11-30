@@ -9,18 +9,23 @@
     <h1>Home Page</h1>
 
     <!-- Month -->
-    <div>
-        <a href="/month/{{date.year}}/{{date.month}}">Click to open month</a>
+    <div id="month-balance-div">
+        <a id="month-link" href="/month/{{date.year}}/{{date.month}}">Click to open month</a>
         <h1 id="year">{{date.year}}</h1>
         <h2 id="month">{{date.month_name}}</h2>
-        <button id="prev" type="button">Previous</button>
-        <button id="next" type="button">Next</button>
+
+        <input type="hidden" id="current-year" value="{{date.year}}">
+        <input type="hidden" id="current-month" value="{{date.month}}">
+
+        <button id="prev-month" type="button">Previous</button>
+        <button id="next-month" type="button">Next</button>
+        
         <p>Balance</p>
-        <h3>{{balance.total}}</h3>
+        <h3 id="month-total">{{balance.total}}</h3>
         <p>Income</p>
-        <h3>{{balance.income}}</h3>
+        <h3 id="month-income">{{balance.income}}</h3>
         <p>Expenses</p>
-        <h3>{{balance.out}}</h3>
+        <h3 id="month-out">{{balance.out}}</h3>
     </div>
 
     <!-- Pending -->
