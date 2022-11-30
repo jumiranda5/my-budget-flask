@@ -40,7 +40,26 @@ def index():
     # Get month balance
     balance = get_month_balance(date['year'], date['month'])
 
-    return render_template("index.html", date=date, balance=balance)
+    # Get not payed transactions (pending) and sum
+    not_payed = db.execute("SELECT * FROM transactions WHERE payed=0 AND (year <= ? AND month <= ? AND day <= ?)", 
+        date["year"], date["month"], date["day"])
+    
+    pending_sum = db.execute("SELECT SUM(amount) FROM transactions WHERE payed=0 AND (year <= ? AND month <= ? AND day <= ?)", 
+        date["year"], date["month"], date["day"])
+
+    pending_total = pending_sum[0]['SUM(amount)']
+
+    # Return 0.0 if result is None
+    if not pending_total:
+        pending_total = 0.0
+
+    # pending dict
+    pending = {
+        "rows": not_payed,
+        "total": pending_total
+    }
+
+    return render_template("index.html", date=date, balance=balance, pending=pending)
 
 
 # Add Transaction
