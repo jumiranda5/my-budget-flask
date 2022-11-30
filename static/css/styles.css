@@ -1,0 +1,74 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/*----------------------------------
+            POSITIONING
+------------------------------------*/
+
+/* Flex */
+
+.flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.header-container.flex {
+    align-items: center;
+}
+
+/* Header */
+
+header {
+    position: fixed;
+    top: 0;
+    height: 80px;
+    width: 100%;
+    background: #8441B9;
+}
+
+.header-container {
+    height: 80px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+header a {
+    display: inline-block;
+}
+
+header h1 {
+    padding: 8px;
+    color: white;
+}
+
+
+/*----------------------------------
+          COLORS AND FONTS
+------------------------------------*/
+
+/* Links */
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+header a {
+    color: #FFFFFF;
+}
+
+header a:hover {
+    color: #EFDCF4;
+}
+
+header a:active {
+    color: #FFFFFF;
+}
