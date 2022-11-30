@@ -16,8 +16,11 @@
         <button id="prev" type="button">Previous</button>
         <button id="next" type="button">Next</button>
         <p>Balance</p>
+        <h3>{{balance.total}}</h3>
         <p>Income</p>
+        <h3>{{balance.income}}</h3>
         <p>Expenses</p>
+        <h3>{{balance.out}}</h3>
     </div>
 
     <!-- Pending -->
@@ -25,13 +28,6 @@
         <a href="/pending">Click to open pending</a>
         <p>Number of bills pending</p>
         <p>amount</p>
-    </div>
-
-    <!-- Category -->
-    <div>
-        <a href="/categories/{{date.year}}/{{date.month}}">Click to open categories</a>
-        <p>month</p>
-        <p>Graphic with categories data</p>
     </div>
 
     <!-- Year -->

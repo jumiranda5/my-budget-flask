@@ -34,8 +34,13 @@ for row in full_db:
 # Home
 @app.route("/")
 def index():
+    # Get today's date
     date = get_date()
-    return render_template("index.html", date=date)
+
+    # Get month balance
+    balance = get_month_balance(date['year'], date['month'])
+
+    return render_template("index.html", date=date, balance=balance)
 
 
 # Add Transaction
@@ -229,14 +234,7 @@ def month(year, month):
     rows = db.execute("SELECT * from transactions WHERE (year=? AND month=?)", year, month)
 
     # Get transactions balance
-    total = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?)", year, month)
-    out = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "out")
-    income = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "in")
-    balance = {
-        "total": total[0]['SUM(amount)'],
-        "out": out[0]['SUM(amount)'],
-        "income": income[0]['SUM(amount)']
-    }
+    balance = get_month_balance(year, month)
 
     # Add month transactions and balance to data dict
     data["rows"] = rows
@@ -271,8 +269,20 @@ def year(year):
 
 
 # -------------------------------------------------
-#           Get add / edit form data
+#                    REUSABLE
 # -------------------------------------------------
+
+def get_month_balance(year, month):
+    # Get transactions balance
+    total = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?)", year, month)
+    out = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "out")
+    income = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "in")
+    balance = {
+        "total": total[0]['SUM(amount)'],
+        "out": out[0]['SUM(amount)'],
+        "income": income[0]['SUM(amount)']
+    }
+    return balance
 
 def get_transaction_form_data():
     # Form data
