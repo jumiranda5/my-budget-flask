@@ -287,10 +287,10 @@ def month_balance(year, month, action):
     # Get prev month dict
     date = get_month(next['year'], next['month'])
 
-    print(date)
-
     # Get month balance
     balance = get_month_balance(next['year'], next['month'])
+
+    print(balance)
 
     response = {
         "date": date,
@@ -308,10 +308,23 @@ def get_month_balance(year, month):
     total = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?)", year, month)
     out = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "out")
     income = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "in")
+
+    total = total[0]['SUM(amount)']
+    out = out[0]['SUM(amount)']
+    income = income[0]['SUM(amount)']
+
+    # Return 0.0 if result is None
+    if not total:
+        total = 0.0
+    if not out:
+        out = 0.0
+    if not income:
+        income = 0.0
+
     balance = {
-        "total": total[0]['SUM(amount)'],
-        "out": out[0]['SUM(amount)'],
-        "income": income[0]['SUM(amount)']
+        "total": total,
+        "out": out,
+        "income": income
     }
     return balance
 
