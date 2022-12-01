@@ -39,11 +39,16 @@ def index():
     year = get_year_balance(date["year"])
     
     # Get not payed transactions (pending) and sum
-    not_payed = db.execute("SELECT * FROM transactions WHERE payed=0 AND (year <= ? AND month <= ? AND day <= ?)", 
-        date["year"], date["month"], date["day"])
-    
-    pending_sum = db.execute("SELECT SUM(amount) FROM transactions WHERE payed=0 AND (year <= ? AND month <= ? AND day <= ?)", 
-        date["year"], date["month"], date["day"])
+    not_payed = db.execute("""SELECT * FROM transactions 
+                              WHERE year = ? AND month = ? AND day <= ?
+                              OR (year <= ? AND month < ?) 
+                              ORDER BY year, month, day""", 
+        date["year"], date["month"], date["day"], date["year"], date["month"])
+
+    pending_sum = db.execute("""SELECT SUM(amount) FROM transactions 
+                                WHERE year = ? AND month = ? AND day <= ?
+                                OR (year <= ? AND month < ?)""", 
+        date["year"], date["month"], date["day"],date["year"], date["month"])
 
     pending_total = pending_sum[0]['SUM(amount)']
 
@@ -54,7 +59,7 @@ def index():
     # pending dict
     pending = {
         "rows": not_payed,
-        "total": pending_total
+        "total": f"${pending_total:,.2f}"
     }
 
     return render_template("index.html", date=date, balance=balance, year=year, pending=pending)
