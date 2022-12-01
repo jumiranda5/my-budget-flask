@@ -353,10 +353,11 @@ def get_month_balance(year, month):
         income = 0.0
 
     balance = {
-        "total": total,
-        "out": out,
-        "income": income
+        "total": f"${total:,.2f}",
+        "out": f"${out:,.2f}",
+        "income": f"${income:,.2f}"
     }
+
     return balance
 
 def get_transaction_form_data():
