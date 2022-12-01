@@ -8,191 +8,184 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+ul {
+    list-style-type: none;
+}
+
+a {
+    display: inline-block;
+}
+
+.flex {
+    border: 1px solid yellowgreen;
+}
+
+.container,
+.month-year,
+.totals-group p,
+.year-months,
+.year-months li,
+.year-month,
+.pending-title,
+.pending-title h3,
+.btn-group a {
+    border: 1px solid red;
+}
+
+.btn-group h2 {
+    border: 1px solid blue;
+}
+
+
+
 /*----------------------------------
             POSITIONING
 ------------------------------------*/
-
-.container {
-    width: 90%;
-    margin: 0 auto;
-}
 
 /* Flex */
 
 .flex {
     display: flex;
     flex-flow: row wrap;
-}
-
-.header-container.flex,
-.balance-container-footer {
     align-items: center;
 }
 
-.balance-container-header {
+.month .date-group {
     justify-content: space-between;
 }
 
-.month-container,
-.balance-container-footer {
+.flex-center {
     justify-content: center;
 }
 
-.month-container,
-.month-year,
-.balance-container-footer p {
+.btn-group h2,
+.totals-group p,
+.pending-title h3 {
     align-self: center;
+}
+
+
+/* Containers */
+
+.container {
+    width: 90%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.container.month {
+    margin-top: 120px;
+}
+
+.container.year,
+.container.pending {
+    margin-top: 40px;
+}
+
+.container.pending {
+    margin-bottom: 80px;
 }
 
 /* Header */
 
-header {
+.header,
+.header .container {
+    height: 80px;
+}
+
+.header {
     position: fixed;
     top: 0;
-    height: 80px;
     width: 100%;
 }
 
-.header-container {
-    height: 80px;
+.header .container {
     max-width: 1200px;
 }
 
 
-header a {
+.header a {
     display: inline-block;
 }
 
-header h1 {
-    padding: 8px;
-}
+/* Month Balance Group */
 
-/* Month div */
-
-.balance-container {
-    margin-top: 100px;
-    max-width: 960px;
-}
-
-.balance-container-header,
-.balance-container-footer {
+.date-group,
+.totals-group {
     height: 80px;
-}
-
-.balance-container-footer > div {
-    margin: 0 32px;
-}
-
-.balance-container-footer span {
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.month-year,
-.month-balance {
-    text-align: center;
 }
 
 .month-year {
     width: 120px;
+    text-align: center;
 }
 
-.month-container .month {
-    margin: 0 8px;
-    padding: 8px;
+.btn-group button,
+.btn-group-link {
+    padding-top: 4px;
 }
 
-.month-balance {
+.balance-total {
     padding: 40px 0;
+    text-align: center;
 }
 
-.arrow-btn {
-    padding: 2px 16px;
-    cursor: pointer;
+.totals-group > div {
+    margin: 0 32px;
 }
 
-/*----------------------------------
-          COLORS AND FONTS
-------------------------------------*/
-
-/* INCOME | EXPENSE */
-
-.in {
-    color: #08A15E;
+.totals-group span {
+    display: inline-block;
+    margin-right: 8px;
 }
 
-.out {
-    color: #ef1775
+/* Year balance group */
+
+.year-months li {
+    width: 25%;
 }
 
-
-/* Links and buttons */
-
-a:link, a:visited {
-    text-decoration: none;
+.year-month {
+    display: block;
+    text-align: center;
+    margin: 16px;
 }
 
-header a:hover {
-    color: #EFDCF4;
+/* Pending */
+
+.pending-title {
+    height: 80px;
 }
 
-header a:active {
-    color: #FFFFFF;
+.pending-title span {
+    margin-right: 8px;
 }
 
-.month-container a:hover {
-    color: #682c96;
+/* Month page link */
+
+.add-link {
+    width: 200px;
+    border: 1px solid red;
+    margin: 40px auto;
 }
 
-.arrow-btn {
-    background: none;
-    border: none;
-    color: #6A656B;
-}
-  
-.arrow-btn:hover {
-    color: #1a1a1a;
+.add-link a {
+    padding: 16px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid blue;
 }
 
-/* Font */
+/* Forms */
 
-header a, header h1 {
-    color: #FFFFFF;
+.form-title {
+    margin: 120px auto 0;
+    text-align: center;
 }
 
-.month-year,
-.balance-container-footer p {
-    font-size: 18px;
-    color: #6A656B;
-}
-
-.balance-container-footer p {
-    font-weight: 500;
-}
-
-.month-balance,
-.month-year,
-.month-container .month {
-    font-weight: 600;
-}
-
-.month-container .month,
-.month-container a,
-.month-balance {
-    color: #8441B9;
-}
-
-.month-balance {
-    font-size: 40px;
-}
-
-/* Background */
-
-header {
-    background: #8441B9;
-}
-
-.balance-container {
-    background: #F1F0F9;
-    border-radius: 8px;
+.form {
+    max-width: 400px;
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
 }

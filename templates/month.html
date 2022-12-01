@@ -6,33 +6,51 @@
 
 {% block main %}
 
-    <h1>{{data.year}}</h1>
-    <h1>{{data.month_name}}</h1>
-
-    <a href="/month/{{prev.year}}/{{prev.month}}">Previous Month</a>
-    <br>
-    <br>
-    <a href="/month/{{next.year}}/{{next.month}}">Next Month</a>
-
-    <br>
-    <br>
-
-    <p>Balance:</p>
-    <h2>{{data.balance.total}}</h2>
-
-    <p>Total Income:</p>
-    <h2>{{data.balance.income}}</h2>
+    <!-- Month -->
+    <div class="container month" id="month-balance-div">
+        
+        <!-- Month date group -->
+        <div class="date-group flex">
+            <p class="month-year" id="month-year">{{data.year}}</p>
+            
+            <div class="btn-group flex">
+                <a class="btn-group-link" href="/month/{{prev.year}}/{{prev.month}}">
+                    <span class="material-symbols-sharp">arrow_back_ios</span>
+                </a>
+            
+                <h2 id="month">{{data.month_name}}</h2>
+        
+                <a class="btn-group-link" href="/month/{{next.year}}/{{next.month}}">
+                    <span class="material-symbols-sharp">arrow_forward_ios</span>
+                </a>
+            </div>
     
-    <p>Total Expenses:</p>
-    <h2>{{data.balance.out}}</h2>
-    <br>
-    <br>
+            <div class="month-year"></div>
+        </div>
 
-    <a href="/add">Add</a>
-    <br>
-    <br>
+        <!-- Month balance -->
+        <p class="balance-total">{{data.balance.total}}</p>
 
-    <div>
+
+        <!-- Month income/expense totals -->
+        <div class="totals-group flex flex-center">
+            <div class="flex">
+                <span class="material-symbols-sharp in">call_received</span>
+                <p>{{data.balance.income}}</p>
+            </div>
+
+            <div class="flex">
+                <span class="material-symbols-sharp out">call_made</span>
+                <p>{{data.balance.out}}</p>    
+            </div>
+        </div>
+    </div>
+
+    <div class="add-link">
+        <a href="/add">Add</a>
+    </div>
+
+    <div class="container">
         <table>
             <thead>
                 <tr>

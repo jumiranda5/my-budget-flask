@@ -6,9 +6,9 @@
 
 {% block main %}
 
-    <h1>Edit Page</h1>
+    <h1 class="form-title">Edit Page</h1>
 
-    <form action="/edit/{{data.id}}" method="post">
+    <form class="container form" action="/edit/{{data.id}}" method="post">
 
         <input type="date" id="date" name="date" value="{{data.date}}">
         <br>
