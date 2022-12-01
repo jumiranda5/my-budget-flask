@@ -12,13 +12,16 @@
         <input type="hidden" id="current-month-year" value="{{date.year}}">
         <input type="hidden" id="current-month" value="{{date.month}}">
 
-        <!-- Month date group -->
-        <div class="date-group flex">
-            <p class="month-year" id="month-year">{{date.year}}</p>
+        <!-- Month title group -->
+
+        <div class="title-group flex">
+            <div class="title">
+                <h2 id="month-year">{{date.year}}</h2>
+            </div>
             
             <div class="btn-group flex">
                 <button id="prev-month" type="button">
-                    <span class="material-symbols-sharp">arrow_back_ios</span>
+                    <span class="material-symbols-sharp">chevron_left</span>
                 </button>
             
                 <h2 id="month">
@@ -26,18 +29,18 @@
                 </h2>
         
                 <button id="next-month" type="button">
-                    <span class="material-symbols-sharp">arrow_forward_ios</span>
+                    <span class="material-symbols-sharp">chevron_right</span>
                 </button>
             </div>
 
-            <div class="month-year"></div>
+            <div class="title"></div>
         </div>
         
         <!-- Month balance -->
         <p class="balance-total" id="month-total">{{balance.total}}</p>
 
         <!-- Month income/expense totals -->
-        <div class="totals-group flex flex-center">
+        <div class="totals-group flex">
             <div class="flex">
                 <span class="material-symbols-sharp in">call_received</span>
                 <p id="month-income">{{balance.income}}</p>
@@ -57,32 +60,39 @@
         <input type="hidden" id="current-year" value="{{date.year}}">
 
         <!-- Year date group -->
-        <div class="date-group flex flex-center">
+        <div class="title-group border flex">
+
+            <div class="title">
+                <h2>Year Balance</h2>
+            </div>
+
             <div class="btn-group flex">
                 <button class="" id="prev-year" type="button">
-                    <span class="material-symbols-sharp">arrow_back_ios</span>
+                    <span class="material-symbols-sharp">chevron_left</span>
                 </button>
             
-                <h2 id="month">
-                    <a id="month-link" href="/month/{{date.year}}/{{date.month}}">{{date.year}}</a>
+                <h2 id="year">
+                    <a>{{date.year}}</a>
                 </h2>
         
                 <button id="next-year" type="button">
-                    <span class="material-symbols-sharp">arrow_forward_ios</span>
+                    <span class="material-symbols-sharp">chevron_right</span>
                 </button>
             </div>
-        </div>
 
-        <!-- Year total balance -->
-        <p class="balance-total" id="year-balance">{{year.balance}}</p>
+            <!-- Year total balance -->
+            <div class="title">
+                <p class="title-balance" id="year-balance">{{year.balance}}</p>
+            </div>
+        </div>
 
         <!-- Year months -->
         <ul class="year-months flex">
             {% for row in year.months %}
                 <li>
-                    <a class="year-month" href="/month/{{year.year}}/{{row.month}}">
-                        <p>{{row.month_name}}</p>
-                        <p>{{row.balance.total}}</p>
+                    <a class="year-month border" href="/month/{{year.year}}/{{row.month}}">
+                        <p class="year-month-name">{{row.month_name}}</p>
+                        <p class="year-month-balance">{{row.balance.total}}</p>
                     </a>
                 </li>
             {% endfor %}
@@ -92,14 +102,21 @@
     <!-- Pending -->
     <div class="container pending">
 
-        <!-- Pending title -->
-        <div class="flex flex-center pending-title">
-            <span class="material-symbols-sharp in">pending</span>
-            <h3>Pending</h3>
-        </div>
+        <!-- Pending balance group -->
+        <div class="title-group border flex">
 
-        <!-- Total pending -->
-        <p class="balance-total">{{pending.total}}</p>
+            <!-- Pending title -->
+            <div class="flex title">
+                <span class="material-symbols-sharp in">pending</span>
+                <h2>Pending</h2>
+            </div>
+
+            <!-- Total pending -->
+            <p></p>
+            <div class="title">
+                <p class="title-balance">{{pending.total}}</p>
+            </div>
+        </div>
 
         <!-- Pending table -->
         <table>

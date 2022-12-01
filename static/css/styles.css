@@ -2,41 +2,32 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    /*border: 1px solid yellowgreen;*/
 }
 
 body {
     font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
 }
 
 ul {
     list-style-type: none;
 }
 
-a {
+span {
     display: inline-block;
 }
 
-.flex {
-    border: 1px solid yellowgreen;
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
-.container,
-.month-year,
-.totals-group p,
-.year-months,
-.year-months li,
-.year-month,
-.pending-title,
-.pending-title h3,
-.btn-group a {
-    border: 1px solid red;
+a {
+    display: inline-block;
+    text-decoration: none;
 }
-
-.btn-group h2 {
-    border: 1px solid blue;
-}
-
-
 
 /*----------------------------------
             POSITIONING
@@ -50,48 +41,7 @@ a {
     align-items: center;
 }
 
-.month .date-group {
-    justify-content: space-between;
-}
-
-.flex-center {
-    justify-content: center;
-}
-
-.btn-group h2,
-.totals-group p,
-.pending-title h3 {
-    align-self: center;
-}
-
-
-/* Containers */
-
-.container {
-    width: 90%;
-    max-width: 960px;
-    margin: 0 auto;
-}
-
-.container.month {
-    margin-top: 120px;
-}
-
-.container.year,
-.container.pending {
-    margin-top: 40px;
-}
-
-.container.pending {
-    margin-bottom: 80px;
-}
-
 /* Header */
-
-.header,
-.header .container {
-    height: 80px;
-}
 
 .header {
     position: fixed;
@@ -99,35 +49,67 @@ a {
     width: 100%;
 }
 
-.header .container {
+.header-container {
+    width: 90%;
     max-width: 1200px;
-}
-
-
-.header a {
-    display: inline-block;
-}
-
-/* Month Balance Group */
-
-.date-group,
-.totals-group {
     height: 80px;
+    margin: 0 auto;
 }
 
-.month-year {
-    width: 120px;
-    text-align: center;
+
+/* Page Container */
+
+.container {
+    width: 90%;
+    max-width: 960px;
+    margin: 60px auto;
+}
+
+.container.month {
+    margin-top: 140px;
+}
+
+/* Page container header */
+
+.title-group {
+    height: 80px;
+    justify-content: space-between;
+    padding: 0 32px;
+}
+
+.title {
+    width: 30%;
+}
+
+.title-balance {
+    text-align: end;
 }
 
 .btn-group button,
 .btn-group-link {
-    padding-top: 4px;
+    padding: 6px 4px 2px;
+    width: 40px;
+    height: 40px;
 }
+
+.btn-group h2 {
+    margin: 0 16px;
+}
+
+.pending .title span {
+    margin-right: 8px;
+}
+
+/* Month container */
 
 .balance-total {
     padding: 40px 0;
     text-align: center;
+}
+
+.totals-group {
+    height: 80px;
+    justify-content: center;
 }
 
 .totals-group > div {
@@ -135,57 +117,132 @@ a {
 }
 
 .totals-group span {
-    display: inline-block;
     margin-right: 8px;
 }
 
-/* Year balance group */
+/* Year container */
+
+.year-months {
+    margin-top: 40px;
+    justify-content: space-between;
+}
 
 .year-months li {
-    width: 25%;
+    width: 23%;
+    margin-bottom: 24px;
 }
 
-.year-month {
+.year-months li a {
     display: block;
     text-align: center;
-    margin: 16px;
-}
-
-/* Pending */
-
-.pending-title {
-    height: 80px;
-}
-
-.pending-title span {
-    margin-right: 8px;
-}
-
-/* Month page link */
-
-.add-link {
-    width: 200px;
-    border: 1px solid red;
-    margin: 40px auto;
-}
-
-.add-link a {
-    padding: 16px;
-    width: 100%;
-    text-align: center;
-    border: 1px solid blue;
-}
-
-/* Forms */
-
-.form-title {
-    margin: 120px auto 0;
-    text-align: center;
-}
-
-.form {
-    max-width: 400px;
-    margin-top: 40px;
     padding: 20px;
-    text-align: center;
+}
+
+.year-month-name {
+    color: #1a1a1a;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.year-month-balance {
+    margin-top: 8px;
+    color: #7128a9;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/*----------------------------------
+          FONTS AND COLORS
+------------------------------------*/
+
+/* Income / Expense colors */
+
+.in {
+    color: #08A15E;
+}
+
+.out {
+    color: #ef1775
+}
+
+/* Header */
+
+.header {
+    background-color: #7128a9;
+}
+
+.header a {
+    color: #FFFFFF;
+}
+
+/* Containers */
+
+.month {
+    background-color: #F1F0F9;
+    border-radius: 8px;
+}
+
+.border {
+    border: 2px solid #e4e3ec;
+    border-radius: 8px;
+}
+
+/* Page container header */
+
+.btn-group h2,
+.btn-group h2 a {
+    color: #7128a9;
+    font-weight: 600;
+}
+
+.btn-group button,
+.btn-group-link {
+    color: #5f5b60;
+}
+
+.title h2,
+.title p {
+    color: #5f5b60;
+    font-size: 20px;
+}
+
+.title h2 {
+    font-weight: 500;
+}
+
+.title .title-balance {
+    color: #7128a9;
+    font-weight: 600;
+}
+
+.pending .title span {
+    color: #c81717;
+}
+
+/* Month container */
+
+.balance-total {
+    color: #7128a9;
+    font-weight: 500;
+    font-size: 40px;
+}
+
+.totals-group p {
+    color: #5f5b60;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+/* Year container */
+
+.year-month-name {
+    color: #1a1a1a;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.year-month-balance {
+    color: #7128a9;
+    font-size: 16px;
+    font-weight: 600;
 }
