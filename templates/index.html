@@ -9,23 +9,48 @@
     <h1>Home Page</h1>
 
     <!-- Month -->
-    <div id="month-balance-div">
-        <a id="month-link" href="/month/{{date.year}}/{{date.month}}">Click to open month</a>
-        <h1 id="month-year">{{date.year}}</h1>
-        <h2 id="month">{{date.month_name}}</h2>
+    <div class="balance-container container" id="month-balance-div">
 
         <input type="hidden" id="current-month-year" value="{{date.year}}">
         <input type="hidden" id="current-month" value="{{date.month}}">
 
-        <button id="prev-month" type="button">Previous</button>
-        <button id="next-month" type="button">Next</button>
+        <div class="balance-container-header flex">
+            <p class="month-year" id="month-year">{{date.year}}</p>
+            
+            <div class="month-container flex">
+
+                <button class="arrow-btn" id="prev-month" type="button">
+                    <span class="material-symbols-sharp">arrow_back_ios</span>
+                </button>
+            
+                <h2 class="month" id="month">
+                    <a id="month-link" href="/month/{{date.year}}/{{date.month}}">{{date.month_name}}</a>
+                </h2>
         
-        <p>Balance</p>
-        <h3 id="month-total">{{balance.total}}</h3>
-        <p>Income</p>
-        <h3 id="month-income">{{balance.income}}</h3>
-        <p>Expenses</p>
-        <h3 id="month-out">{{balance.out}}</h3>
+                <button class="arrow-btn" id="next-month" type="button">
+                    <span class="material-symbols-sharp">arrow_forward_ios</span>
+                </button>
+            </div>
+
+            <div class="month-year"></div>
+        </div>
+        
+        <p id="month-total" class="month-balance">{{balance.total}}</p>
+
+        <div class="balance-container-footer flex">
+
+            <div class="flex">
+                <span class="material-symbols-sharp in">call_received</span>
+                <p id="month-income">{{balance.income}}</p>
+            </div>
+
+            <div class="flex">
+                <span class="material-symbols-sharp out">call_made</span>
+                <p id="month-out">{{balance.out}}</p>    
+            </div>
+
+        </div>
+        
     </div>
 
     <!-- Year -->

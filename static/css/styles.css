@@ -12,6 +12,11 @@ body {
             POSITIONING
 ------------------------------------*/
 
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
 /* Flex */
 
 .flex {
@@ -19,8 +24,24 @@ body {
     flex-flow: row wrap;
 }
 
-.header-container.flex {
+.header-container.flex,
+.balance-container-footer {
     align-items: center;
+}
+
+.balance-container-header {
+    justify-content: space-between;
+}
+
+.month-container,
+.balance-container-footer {
+    justify-content: center;
+}
+
+.month-container,
+.month-year,
+.balance-container-footer p {
+    align-self: center;
 }
 
 /* Header */
@@ -30,14 +51,11 @@ header {
     top: 0;
     height: 80px;
     width: 100%;
-    background: #8441B9;
 }
 
 .header-container {
     height: 80px;
-    width: 90%;
     max-width: 1200px;
-    margin: 0 auto;
 }
 
 
@@ -47,22 +65,71 @@ header a {
 
 header h1 {
     padding: 8px;
-    color: white;
 }
 
+/* Month div */
+
+.balance-container {
+    margin-top: 100px;
+    max-width: 960px;
+}
+
+.balance-container-header,
+.balance-container-footer {
+    height: 80px;
+}
+
+.balance-container-footer > div {
+    margin: 0 32px;
+}
+
+.balance-container-footer span {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.month-year,
+.month-balance {
+    text-align: center;
+}
+
+.month-year {
+    width: 120px;
+}
+
+.month-container .month {
+    margin: 0 8px;
+    padding: 8px;
+}
+
+.month-balance {
+    padding: 40px 0;
+}
+
+.arrow-btn {
+    padding: 2px 16px;
+    cursor: pointer;
+}
 
 /*----------------------------------
           COLORS AND FONTS
 ------------------------------------*/
 
-/* Links */
+/* INCOME | EXPENSE */
+
+.in {
+    color: #08A15E;
+}
+
+.out {
+    color: #ef1775
+}
+
+
+/* Links and buttons */
 
 a:link, a:visited {
     text-decoration: none;
-}
-
-header a {
-    color: #FFFFFF;
 }
 
 header a:hover {
@@ -71,4 +138,61 @@ header a:hover {
 
 header a:active {
     color: #FFFFFF;
+}
+
+.month-container a:hover {
+    color: #682c96;
+}
+
+.arrow-btn {
+    background: none;
+    border: none;
+    color: #6A656B;
+}
+  
+.arrow-btn:hover {
+    color: #1a1a1a;
+}
+
+/* Font */
+
+header a, header h1 {
+    color: #FFFFFF;
+}
+
+.month-year,
+.balance-container-footer p {
+    font-size: 18px;
+    color: #6A656B;
+}
+
+.balance-container-footer p {
+    font-weight: 500;
+}
+
+.month-balance,
+.month-year,
+.month-container .month {
+    font-weight: 600;
+}
+
+.month-container .month,
+.month-container a,
+.month-balance {
+    color: #8441B9;
+}
+
+.month-balance {
+    font-size: 40px;
+}
+
+/* Background */
+
+header {
+    background: #8441B9;
+}
+
+.balance-container {
+    background: #F1F0F9;
+    border-radius: 8px;
 }
