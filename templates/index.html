@@ -99,65 +99,90 @@
         </ul>
     </div>
 
-    <!-- Pending -->
-    <div class="container pending">
+    <!-- Pending => only if pending rows count > 0 -->
+    {% if pending.count > 0 %}
+    
+        <div class="container pending">
 
-        <!-- Pending balance group -->
-        <div class="title-group border flex">
+            <!-- Pending balance group -->
+            <div class="title-group flex">
 
-            <!-- Pending title -->
-            <div class="flex title">
-                <span class="material-symbols-sharp in">pending</span>
-                <h2>Pending</h2>
+                <!-- Pending title -->
+                <div class="flex title">
+                    <span class="material-symbols-sharp in">pending</span>
+                    <h2>Pending</h2>
+                </div>
+    
+                <!-- Total pending -->
+                <div class="title">
+                    <!-- Change color depending on amount value -->
+                    {% if pending.total > 0 %}
+                        <p class="title-balance positive">{{pending.total_currency}}</p>
+                    {% else %}
+                        <p class="title-balance out">{{pending.total_currency}}</p>
+                    {% endif %}
+                </div>
             </div>
-
-            <!-- Total pending -->
-            <p></p>
-            <div class="title">
-                <p class="title-balance">{{pending.total}}</p>
-            </div>
+        
+            <!-- Pending table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Day</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Parcel</th>
+                        <th>Payed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in pending.rows %}
+                        <tr>
+                            <td class="secondary-column">{{row.year}}</td>
+                            <td>{{row.month}}</td>
+                            <td>{{row.day}}</td>
+                            <td>{{row.description}}</td>
+                            
+                            <!-- Change color depending on amount value -->
+                            {% if 0 > row.amount %}
+                                <td class="td-amount out">{{row.amount_currency}}</td>
+                            {% else %}
+                                <td class="td-amount positive">{{row.amount_currency}}</td>
+                            {% endif %}
+    
+                            <!-- Change icon and color depending on type value -->
+                            {% if row.type == "out" %}
+                                <td><span class="material-symbols-sharp out">call_made</span></td>
+                            {% else %}
+                                <td><span class="material-symbols-sharp in">call_received</span></td>
+                            {% endif %}
+                            
+                            <!-- Only show parcels if > 1 -->
+                            {% if row.parcels > 1 %}
+                                <td>{{row.parcel}}/{{row.parcels}}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+    
+                            <!-- Payed checkbox -->
+                            <td>
+                                {% if row.payed == 1 %}
+                                    <input type="checkbox" class="{{row.id}}" id="edit-payed" name="edit-payed" value="payed" checked >
+                                {% else %}
+                                    <input type="checkbox" class="{{row.id}}" id="edit-payed" name="edit-payed" value="payed">
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
-        <!-- Pending table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Month</th>
-                    <th>Day</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                    <th>Parcel</th>
-                    <th>Payed</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in pending.rows %}
-                    <tr>
-                        <td>{{row.year}}</td>
-                        <td>{{row.month}}</td>
-                        <td>{{row.day}}</td>
-                        <td>{{row.description}}</td>
-                        <td>{{row.amount}}</td>
-                        <td>{{row.type}}</td>
-                        {% if row.parcels > 1 %}
-                            <td>{{row.parcel}}/{{row.parcels}}</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        <td>
-                            {% if row.payed == 1 %}
-                                <input type="checkbox" class="{{row.id}}" id="edit-payed" name="edit-payed" value="payed" checked >
-                            {% else %}
-                                <input type="checkbox" class="{{row.id}}" id="edit-payed" name="edit-payed" value="payed">
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    {% endif %}
 
-    </div>
+    
 
 {% endblock %}

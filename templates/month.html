@@ -54,31 +54,44 @@
         <table>
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Day</th>
-                    <th>Tag</th>
                     <th>Description</th>
                     <th>Amount</th>
                     <th>Type</th>
                     <th>Parcel</th>
                     <th>Payed</th>
-                    <th>Parcel id</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in data.rows %}
                     <tr>
-                        <td>{{row.id}}</td>
                         <td>{{row.day}}</td>
-                        <td>{{row.tag}}</td>
                         <td>{{row.description}}</td>
-                        <td>{{row.amount}}</td>
-                        <td>{{row.type}}</td>
+
+                        <!-- Change color depending on amount value -->
+                        {% if 0 > row.amount %}
+                            <td class="td-amount out">{{row.amount}}</td>
+                        {% else %}
+                            <td class="td-amount positive">{{row.amount}}</td>
+                        {% endif %}
+
+                        <!-- Change icon and color depending on type value -->
+                        {% if row.type == "out" %}
+                            <td><span class="material-symbols-sharp out">call_made</span></td>
+                        {% else %}
+                            <td><span class="material-symbols-sharp in">call_received</span></td>
+                        {% endif %}
+                        
+                        <!-- Only show parcels if > 1 -->
                         {% if row.parcels > 1 %}
                             <td>{{row.parcel}}/{{row.parcels}}</td>
                         {% else %}
                             <td></td>
                         {% endif %}
+
+                        <!-- Payed checkbox -->
                         <td>
                             {% if row.payed == 1 %}
                                 <input type="checkbox" class="{{row.id}}" id="edit-payed" name="edit-payed" value="payed" checked >
@@ -86,7 +99,6 @@
                                 <input type="checkbox" class="{{row.id}}" id="edit-payed" name="edit-payed" value="payed">
                             {% endif %}
                         </td>
-                        <td>{{row.parcel_id}}</td>
                         <td>
                             {% if row.parcels > 1 %}
                                 <form action="/delete/{{data.year}}/{{data.month}}/{{row.parcel_id}}/{{row.parcels}}" method="post">

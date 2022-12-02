@@ -138,32 +138,29 @@ a {
     padding: 20px;
 }
 
-.year-month-name {
-    color: #1a1a1a;
-    font-size: 16px;
-    font-weight: 500;
-}
-
 .year-month-balance {
     margin-top: 8px;
-    color: #7128a9;
-    font-size: 16px;
-    font-weight: 600;
+}
+
+/* Table */
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    padding: 8px;
+}
+
+tr {
+    height: 48px;
+}
+
+th, td {
+    padding: 0 8px 0;
 }
 
 /*----------------------------------
           FONTS AND COLORS
 ------------------------------------*/
-
-/* Income / Expense colors */
-
-.in {
-    color: #08A15E;
-}
-
-.out {
-    color: #ef1775
-}
 
 /* Header */
 
@@ -187,6 +184,12 @@ a {
     border-radius: 8px;
 }
 
+.pending .title-group {
+    background-color: #c8171708;
+    border: 2px solid #c8171750;
+    border-radius: 8px;
+}
+
 /* Page container header */
 
 .btn-group h2,
@@ -201,7 +204,7 @@ a {
 }
 
 .title h2,
-.title p {
+.title-balance {
     color: #5f5b60;
     font-size: 20px;
 }
@@ -210,7 +213,7 @@ a {
     font-weight: 500;
 }
 
-.title .title-balance {
+.title-balance {
     color: #7128a9;
     font-weight: 600;
 }
@@ -245,4 +248,37 @@ a {
     color: #7128a9;
     font-size: 16px;
     font-weight: 600;
+}
+
+/* Table */
+
+th, td {
+    text-align: start;
+    border-bottom: 2px solid #e4e3ec;
+}
+
+.td-amount {
+    font-weight: 500;
+}
+
+#edit-payed {
+    transform: scale(1.4);
+}
+
+.secondary-column {
+    color: #5f5b60;
+}
+
+/* Income / Expense colors */
+
+.in {
+    color: #08A15E;
+}
+
+.out {
+    color: #ef1775
+}
+
+.positive {
+    color: #7128a9;
 }

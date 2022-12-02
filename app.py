@@ -56,11 +56,19 @@ def index():
     if not pending_total:
         pending_total = 0.0
 
+    # Add currency to rows
+    for row in not_payed:
+        row['amount_currency'] = f"${row['amount']:,.2f}"
+
     # pending dict
     pending = {
         "rows": not_payed,
-        "total": f"${pending_total:,.2f}"
+        "count": len(not_payed),
+        "total": pending_total,
+        "total_currency": f"${pending_total:,.2f}"
     }
+
+    print(f"=================> {len(pending['rows'])}")
 
     return render_template("index.html", date=date, balance=balance, year=year, pending=pending)
 
