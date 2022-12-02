@@ -37,7 +37,12 @@
         </div>
         
         <!-- Month balance -->
-        <p class="balance-total" id="month-total">{{balance.total}}</p>
+        <!-- Change color depending on amount value -->
+        {% if balance.total > -1 %}
+            <p class="balance-total positive" id="month-total">{{balance.total_currency}}</p>
+        {% else %}
+            <p class="balance-total out" id="month-total">{{balance.total_currency}}</p>
+        {% endif %}
 
         <!-- Month income/expense totals -->
         <div class="totals-group flex">
@@ -82,7 +87,12 @@
 
             <!-- Year total balance -->
             <div class="title">
-                <p class="title-balance" id="year-balance">{{year.balance}}</p>
+                <!-- Change color depending on amount value -->
+                {% if year.balance > -1 %}
+                    <p class="title-balance positive" id="year-balance">{{year.balance_currency}}</p>
+                {% else %}
+                    <p class="title-balance out" id="year-balance">{{year.balance_currency}}</p>
+                {% endif %}
             </div>
         </div>
 
@@ -92,7 +102,12 @@
                 <li>
                     <a class="year-month border" href="/month/{{year.year}}/{{row.month}}">
                         <p class="year-month-name">{{row.month_name}}</p>
-                        <p class="year-month-balance">{{row.balance.total}}</p>
+                        <!-- Change color depending on amount value -->
+                        {% if row.balance.total > -1 %}
+                            <p class="year-month-balance positive">{{row.balance.total_currency}}</p>
+                        {% else %}
+                            <p class="year-month-balance out">{{row.balance.total_currency}}</p>
+                        {% endif %}
                     </a>
                 </li>
             {% endfor %}
@@ -116,7 +131,7 @@
                 <!-- Total pending -->
                 <div class="title">
                     <!-- Change color depending on amount value -->
-                    {% if pending.total > 0 %}
+                    {% if pending.total > -1 %}
                         <p class="title-balance positive">{{pending.total_currency}}</p>
                     {% else %}
                         <p class="title-balance out">{{pending.total_currency}}</p>

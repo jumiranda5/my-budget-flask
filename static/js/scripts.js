@@ -26,6 +26,8 @@ $(document).ready(function(){
         var month = $("#current-month").val()
         path = "/balance/" + year + "/" + month + "/prev"
 
+        console.log(path)
+
         $.get(path, function(data, status){
             update_month(data)
         });
@@ -34,9 +36,11 @@ $(document).ready(function(){
     // Home page => update month div on next button click
     $("#next-month").click(function(){
         
-        var year = $("#current-year").val()
+        var year = $("#current-month-year").val()
         var month = $("#current-month").val()
         path = "/balance/" + year + "/" + month + "/next"
+
+        console.log(path)
 
         $.get(path, function(data, status){
             update_month(data)
@@ -46,13 +50,24 @@ $(document).ready(function(){
     // Update month div
     function update_month(data) {
         
+        // update html
         $("#current-month-year").val(data.date.year)
         $("#current-month").val(data.date.month)
         $("#month-year").text(data.date.year)
         $("#month").text(data.date.month_name)
-        $("#month-total").text(data.balance.total)
         $("#month-income").text(data.balance.income)
         $("#month-out").text(data.balance.out)
+        $("#month-total").text(data.balance.total_currency)
+
+        // Change balance color according to value
+        if (data.balance.total >= 0) {
+            $("#month-total").removeClass("out")
+            $("#month-total").addClass("positive")    
+        }
+        else {
+            $("#month-total").addClass("out")
+            $("#month-total").removeClass("positive")
+        }
 
         var newUrl = "/month/" + data.date.year + "/" + data.date.month 
         $("#month-link").attr("href", newUrl);
@@ -84,10 +99,34 @@ $(document).ready(function(){
     function update_year(data) {    
         $("#current-year").val(data.year)
         $("#year").text(data.year)
-        $("#year-balance").text(data.balance)
+        $("#year-balance").text(data.balance_currency)
 
-        $(".year-month > p").each(function(i) {
-            $(this).text(data.months[i].balance.total);
+        // Change balance color according to value
+        if (data.balance >= 0) {
+            $("#year-balance").removeClass("out")
+            $("#year-balance").addClass("positive")    
+        }
+        else {
+            $("#year-balance").addClass("out")
+            $("#year-balance").removeClass("positive")
+        }
+
+        // Update each list item
+        $(".year-month-balance").each(function(i) {
+            
+            // Update balance value
+            $(this).text(data.months[i].balance.total_currency);
+            
+            // Change balance color according to value
+            if (data.balance >= 0) {
+                $(this).removeClass("out")
+                $(this).addClass("positive")    
+            }
+            else {
+                $(this).addClass("out")
+                $(this).removeClass("positive")
+            }
+
         });
     }
 });

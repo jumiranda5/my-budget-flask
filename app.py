@@ -334,6 +334,11 @@ def get_year_balance(year):
     year_balance = db.execute("SELECT SUM(amount) FROM transactions WHERE year = ?", year)
     year_balance = year_balance[0]['SUM(amount)']
 
+    # Return 0.0 if result is None
+    if not year_balance:
+        year_balance = 0.0
+
+    # Get each month balance
     for row in year_months:
         row_balance = get_month_balance(year, row['month'])
         row['balance'] = row_balance
@@ -341,7 +346,8 @@ def get_year_balance(year):
     return {
         "year": year,
         "months": year_months,
-        "balance": year_balance
+        "balance": year_balance,
+        "balance_currency": currency(year_balance)
     }
 
 
@@ -364,12 +370,14 @@ def get_month_balance(year, month):
         income = 0.0
 
     balance = {
-        "total": currency(total),
+        "total": total,
+        "total_currency": currency(total),
         "out": currency(out),
         "income": currency(income)
     }
 
     return balance
+
 
 def get_transaction_form_data():
     # Form data
