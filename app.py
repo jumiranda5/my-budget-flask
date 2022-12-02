@@ -1,6 +1,6 @@
 from cs50 import SQL
 from flask import Flask, render_template, request, redirect
-from helpers import get_date, get_month, get_prev_month, get_next_month, get_year
+from helpers import get_date, get_month, get_prev_month, get_next_month, get_year, currency
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
 
 
@@ -58,14 +58,14 @@ def index():
 
     # Add currency to rows
     for row in not_payed:
-        row['amount_currency'] = f"${row['amount']:,.2f}"
+        row['amount_currency'] = currency(row['amount'])
 
     # pending dict
     pending = {
         "rows": not_payed,
         "count": len(not_payed),
         "total": pending_total,
-        "total_currency": f"${pending_total:,.2f}"
+        "total_currency": currency(pending_total)
     }
 
     return render_template("index.html", date=date, balance=balance, year=year, pending=pending)
@@ -364,9 +364,9 @@ def get_month_balance(year, month):
         income = 0.0
 
     balance = {
-        "total": f"${total:,.2f}",
-        "out": f"${out:,.2f}",
-        "income": f"${income:,.2f}"
+        "total": currency(total),
+        "out": currency(out),
+        "income": currency(income)
     }
 
     return balance

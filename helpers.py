@@ -157,3 +157,7 @@ def validate_repeat(repeat):
         return r
     except:
         return "invalid"
+
+
+def currency(amount):
+    return f"${amount:,.2f}"
