@@ -1,5 +1,5 @@
 from datetime import datetime
-from calendar import month_name, month_abbr
+from calendar import month_name
 import re
 
 
@@ -77,7 +77,6 @@ def get_year():
         year.append(month)
 
     return year
-
 
 
 def validate_date(date):

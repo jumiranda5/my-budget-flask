@@ -1,6 +1,13 @@
 from cs50 import SQL
 from flask import Flask, render_template, request, redirect
-from helpers import get_date, get_month, get_prev_month, get_next_month, get_year, currency
+from helpers import (
+    get_date,
+    get_month,
+    get_prev_month,
+    get_next_month,
+    get_year,
+    currency,
+)
 from helpers import validate_date, validate_amount, validate_text, validate_repeat
 
 
@@ -12,7 +19,8 @@ db = SQL("sqlite:///budget.db")
 
 
 # Create transactions table if it doesn't exist
-db.execute('''CREATE TABLE IF NOT EXISTS transactions(
+db.execute(
+    """CREATE TABLE IF NOT EXISTS transactions(
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     year INTEGER NOT NULL,
     month quantity INTEGER NOT NULL,
@@ -23,7 +31,8 @@ db.execute('''CREATE TABLE IF NOT EXISTS transactions(
     parcels INTEGER DEFAULT 1,
     parcel INTEGER DEFAULT 1,
     parcel_id INTEGER,
-    payed INTEGER DEFAULT 0)''')
+    payed INTEGER DEFAULT 0)"""
+)
 
 
 # Home
@@ -33,24 +42,36 @@ def index():
     date = get_date()
 
     # Get month balance
-    balance = get_month_balance(date['year'], date['month'])
+    balance = get_month_balance(date["year"], date["month"])
 
     # Year
     year = get_year_balance(date["year"])
-    
+
     # Get not payed transactions (pending) and sum
-    not_payed = db.execute("""SELECT * FROM transactions 
+    not_payed = db.execute(
+        """SELECT * FROM transactions 
                               WHERE payed = 0 AND year = ? AND month = ? AND day <= ?
                               OR (payed = 0 AND  year <= ? AND month < ?) 
-                              ORDER BY year, month, day""", 
-        date["year"], date["month"], date["day"], date["year"], date["month"])
+                              ORDER BY year, month, day""",
+        date["year"],
+        date["month"],
+        date["day"],
+        date["year"],
+        date["month"],
+    )
 
-    pending_sum = db.execute("""SELECT SUM(amount) FROM transactions 
+    pending_sum = db.execute(
+        """SELECT SUM(amount) FROM transactions 
                                 WHERE payed = 0 AND year = ? AND month = ? AND day <= ?
-                                OR (payed = 0 AND year <= ? AND month < ?)""", 
-        date["year"], date["month"], date["day"],date["year"], date["month"])
+                                OR (payed = 0 AND year <= ? AND month < ?)""",
+        date["year"],
+        date["month"],
+        date["day"],
+        date["year"],
+        date["month"],
+    )
 
-    pending_total = pending_sum[0]['SUM(amount)']
+    pending_total = pending_sum[0]["SUM(amount)"]
 
     # Return 0.0 if result is None
     if not pending_total:
@@ -58,17 +79,19 @@ def index():
 
     # Add currency to rows
     for row in not_payed:
-        row['amount_currency'] = currency(row['amount'])
+        row["amount_currency"] = currency(row["amount"])
 
     # pending dict
     pending = {
         "rows": not_payed,
         "count": len(not_payed),
         "total": pending_total,
-        "total_currency": currency(pending_total)
+        "total_currency": currency(pending_total),
     }
 
-    return render_template("index.html", date=date, balance=balance, year=year, pending=pending)
+    return render_template(
+        "index.html", date=date, balance=balance, year=year, pending=pending
+    )
 
 
 # Add Transaction
@@ -77,17 +100,17 @@ def add():
     if request.method == "POST":
         # Form data
         data = get_transaction_form_data()
-        date = data['date']
-        payed = data['payed']
+        date = data["date"]
+        payed = data["payed"]
 
         # TODO: handle invalid data
 
         # Variable to store current parcel
         parcel_date = [date[0], date[1], date[2]]
         parcel_id = 0
-            
+
         # insert each parcel
-        for i in range(data['parcels']):
+        for i in range(data["parcels"]):
             parcel = i + 1
 
             # if not first parcel => get next month
@@ -97,16 +120,18 @@ def add():
                 payed = 0
 
             # Insert transaction
-            id = insert_transaction(parcel_date[0], 
-                                    parcel_date[1], 
-                                    parcel_date[2], 
-                                    data['description'], 
-                                    data['amount'], 
-                                    data['type'], 
-                                    data['parcels'], 
-                                    parcel, 
-                                    None, 
-                                    payed)
+            id = insert_transaction(
+                parcel_date[0],
+                parcel_date[1],
+                parcel_date[2],
+                data["description"],
+                data["amount"],
+                data["type"],
+                data["parcels"],
+                parcel,
+                None,
+                payed,
+            )
 
             # if first parcel => update parcel_id value
             if i == 0:
@@ -144,63 +169,80 @@ def edit(id):
     date = f"{row[0]['year']}-{row[0]['month']:02d}-{row[0]['day']:02d}"
 
     # if transaction has parcels => get first parcel
-    if row[0]['parcels'] > 1:
-        first_parcel = db.execute("SELECT MIN(id) FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
-        d = db.execute("SELECT year, month, day FROM transactions WHERE id=?", first_parcel[0]['MIN(id)'])
+    if row[0]["parcels"] > 1:
+        first_parcel = db.execute(
+            "SELECT MIN(id) FROM transactions WHERE parcel_id=?", row[0]["parcel_id"]
+        )
+        d = db.execute(
+            "SELECT year, month, day FROM transactions WHERE id=?",
+            first_parcel[0]["MIN(id)"],
+        )
         date = f"{d[0]['year']}-{d[0]['month']:02d}-{d[0]['day']:02d}"
 
     if request.method == "POST":
         # Form data
         data = get_transaction_form_data()
-        date = data['date']
-        parcels = data['parcels']
-        description = data['description']
-        amount = data['amount']
-        type = data['type']
+        date = data["date"]
+        parcels = data["parcels"]
+        description = data["description"]
+        amount = data["amount"]
+        type = data["type"]
 
         # Update transactions values
-        if row[0]['parcels'] == 1:
+        if row[0]["parcels"] == 1:
             # If original parcel count is 1 => update all values
-            update_single_transaction(date[0], date[1], date[2], description, amount, type, parcels, row[0]['id'])
+            update_single_transaction(
+                date[0],
+                date[1],
+                date[2],
+                description,
+                amount,
+                type,
+                parcels,
+                row[0]["id"],
+            )
         else:
             # Update all parcels
-            original_date = [row[0]['year'], row[0]['month'], row[0]['day']]
+            original_date = [row[0]["year"], row[0]["month"], row[0]["day"]]
             last_parcel_date = update_transaction_parcels(
-                        original_date, 
-                        date, 
-                        description, 
-                        amount, 
-                        type, 
-                        parcels, 
-                        row[0]['parcel_id'])
+                original_date,
+                date,
+                description,
+                amount,
+                type,
+                parcels,
+                row[0]["parcel_id"],
+            )
 
         # If parcels count changed
-        if not parcels == row[0]['parcels']:
+        if not parcels == row[0]["parcels"]:
             # Number of parcels to add/delete
-            extra = parcels - row[0]['parcels']
+            extra = parcels - row[0]["parcels"]
 
             if extra > 0:
                 # Parcel count increased => get last transaction date
                 new_date = [last_parcel_date[0], last_parcel_date[1], date[2]]
-                new_parcel = row[0]['parcels'] + 1
+                new_parcel = row[0]["parcels"] + 1
 
                 for _ in range(extra):
                     # Insert transaction
-                    insert_transaction(new_date[0], 
-                                       new_date[1], 
-                                       new_date[2], 
-                                       description, 
-                                       amount, 
-                                       type, 
-                                       parcels, 
-                                       new_parcel, 
-                                       row[0]['parcel_id'], 
-                                       data['payed'])
-                    
+                    insert_transaction(
+                        new_date[0],
+                        new_date[1],
+                        new_date[2],
+                        description,
+                        amount,
+                        type,
+                        parcels,
+                        new_parcel,
+                        row[0]["parcel_id"],
+                        data["payed"],
+                    )
+
                     # Update new_date
                     new_month = get_next_month(new_date[0], new_date[1])
-                    new_date[0] = new_month['year']
-                    new_date[1] = new_month['month']
+                    new_date[0] = new_month["year"]
+                    new_date[1] = new_month["month"]
 
                     # Update new_parcel
                     new_parcel = new_parcel + 1
@@ -210,33 +252,40 @@ def edit(id):
                 for _ in range(abs(extra)):
 
                     # get last transaction id with parcel_id from row
-                    last_id = db.execute("SELECT MAX(id) FROM transactions WHERE parcel_id=?", row[0]['parcel_id'])
-                    id = last_id[0]['MAX(id)']
+                    last_id = db.execute(
+                        "SELECT MAX(id) FROM transactions WHERE parcel_id=?",
+                        row[0]["parcel_id"],
+                    )
+                    id = last_id[0]["MAX(id)"]
 
                     # Delete transaction
                     db.execute("DELETE FROM transactions WHERE id=?", id)
 
                     # update parcels count
-                    db.execute("UPDATE transactions SET parcels=? WHERE parcel_id=?", parcels, row[0]['parcel_id'])
+                    db.execute(
+                        "UPDATE transactions SET parcels=? WHERE parcel_id=?",
+                        parcels,
+                        row[0]["parcel_id"],
+                    )
 
-        return redirect(f"/month/{row[0]['year']}/{row[0]['month']}") 
+        return redirect(f"/month/{row[0]['year']}/{row[0]['month']}")
     else:
         # Data dict
         data = {
-            "id": row[0]['id'],
+            "id": row[0]["id"],
             "date": date,
-            "type": row[0]['type'],
-            "amount": abs(row[0]['amount']),
-            "description": row[0]['description'],
-            "payed": row[0]['payed'],
-            "parcels": row[0]['parcels']
+            "type": row[0]["type"],
+            "amount": abs(row[0]["amount"]),
+            "description": row[0]["description"],
+            "payed": row[0]["payed"],
+            "parcels": row[0]["parcels"],
         }
 
         return render_template("edit.html", data=data)
 
 
 # Edit Payed
-@app.route('/edit-payed/<id>/<checked>', methods=["POST"])
+@app.route("/edit-payed/<id>/<checked>", methods=["POST"])
 def edit_payed(id, checked):
     # If checkbox is checked, toggle payed to 1 (payed)
     if checked == "true":
@@ -259,7 +308,9 @@ def month(year, month):
     data = get_month(year, month)
 
     # Get month transactions from db
-    rows = db.execute("SELECT * from transactions WHERE (year=? AND month=?)", year, month)
+    rows = db.execute(
+        "SELECT * from transactions WHERE (year=? AND month=?)", year, month
+    )
 
     # Get transactions balance
     balance = get_month_balance(year, month)
@@ -269,8 +320,8 @@ def month(year, month):
     data["balance"] = balance
 
     # Get previous and next month from data => integers
-    prev = get_prev_month(data['year'], data['month'])
-    next = get_next_month(data['year'], data['month'])
+    prev = get_prev_month(data["year"], data["month"])
+    next = get_next_month(data["year"], data["month"])
 
     # TODO: handle error
 
@@ -281,6 +332,7 @@ def month(year, month):
 #                     AJAX
 # -------------------------------------------------
 
+
 @app.route("/balance/<year>/<month>/<action>")
 def month_balance(year, month, action):
 
@@ -289,22 +341,19 @@ def month_balance(year, month, action):
 
     # Get previous or next
     if action == "prev":
-        next = get_prev_month(date['year'], date['month'])
+        next = get_prev_month(date["year"], date["month"])
     else:
-        next = get_next_month(date['year'], date['month'])
+        next = get_next_month(date["year"], date["month"])
 
     # Get prev month dict
-    date = get_month(next['year'], next['month'])
+    date = get_month(next["year"], next["month"])
 
     # Get month balance
-    balance = get_month_balance(next['year'], next['month'])
+    balance = get_month_balance(next["year"], next["month"])
 
     print(balance)
 
-    response = {
-        "date": date,
-        "balance": balance
-    }
+    response = {"date": date, "balance": balance}
 
     return response
 
@@ -317,22 +366,26 @@ def year_balance(year, action):
 
     # get next year
     if action == "prev":
-        next_year = date['year'] - 1
+        next_year = date["year"] - 1
     else:
-        next_year = date['year'] + 1
-    
+        next_year = date["year"] + 1
+
     # return year object
     return get_year_balance(next_year)
+
 
 # -------------------------------------------------
 #                    REUSABLE
 # -------------------------------------------------
 
+
 def get_year_balance(year):
-    
+
     year_months = get_year()
-    year_balance = db.execute("SELECT SUM(amount) FROM transactions WHERE year = ?", year)
-    year_balance = year_balance[0]['SUM(amount)']
+    year_balance = db.execute(
+        "SELECT SUM(amount) FROM transactions WHERE year = ?", year
+    )
+    year_balance = year_balance[0]["SUM(amount)"]
 
     # Return 0.0 if result is None
     if not year_balance:
@@ -340,26 +393,38 @@ def get_year_balance(year):
 
     # Get each month balance
     for row in year_months:
-        row_balance = get_month_balance(year, row['month'])
-        row['balance'] = row_balance
+        row_balance = get_month_balance(year, row["month"])
+        row["balance"] = row_balance
 
     return {
         "year": year,
         "months": year_months,
         "balance": year_balance,
-        "balance_currency": currency(year_balance)
+        "balance_currency": currency(year_balance),
     }
 
 
 def get_month_balance(year, month):
     # Get transactions balance
-    total = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?)", year, month)
-    out = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "out")
-    income = db.execute("SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)", year, month, "in")
+    total = db.execute(
+        "SELECT SUM(amount) from transactions WHERE (year=? AND month=?)", year, month
+    )
+    out = db.execute(
+        "SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)",
+        year,
+        month,
+        "out",
+    )
+    income = db.execute(
+        "SELECT SUM(amount) from transactions WHERE (year=? AND month=?) AND (type=?)",
+        year,
+        month,
+        "in",
+    )
 
-    total = total[0]['SUM(amount)']
-    out = out[0]['SUM(amount)']
-    income = income[0]['SUM(amount)']
+    total = total[0]["SUM(amount)"]
+    out = out[0]["SUM(amount)"]
+    income = income[0]["SUM(amount)"]
 
     # Return 0.0 if result is None
     if not total:
@@ -373,7 +438,7 @@ def get_month_balance(year, month):
         "total": total,
         "total_currency": currency(total),
         "out": currency(out),
-        "income": currency(income)
+        "income": currency(income),
     }
 
     return balance
@@ -393,7 +458,7 @@ def get_transaction_form_data():
         amount = request.form["amount"]
 
     amount = validate_amount(amount)
-    
+
     # payed checkbox
     if request.form.get("payed"):
         payed = 1
@@ -406,7 +471,7 @@ def get_transaction_form_data():
         "description": description,
         "parcels": parcels,
         "amount": amount,
-        "payed": payed
+        "payed": payed,
     }
 
 
@@ -414,47 +479,86 @@ def get_transaction_form_data():
 #                    DATABASE
 # -------------------------------------------------
 
-def insert_transaction(year, month, day, description, amount, type, parcels, parcel, parcel_id, payed):
-    id = db.execute('''INSERT INTO transactions 
+
+def insert_transaction(
+    year, month, day, description, amount, type, parcels, parcel, parcel_id, payed
+):
+    id = db.execute(
+        """INSERT INTO transactions 
                                (year, month, day, description, amount, type, parcels, parcel, parcel_id, payed) 
-                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                                year, month, day, description, amount, type, parcels, parcel, parcel_id, payed)
+                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        year,
+        month,
+        day,
+        description,
+        amount,
+        type,
+        parcels,
+        parcel,
+        parcel_id,
+        payed,
+    )
     return id
 
 
-def update_single_transaction(year, month, day, description, amount, type, parcels, parcel_id):
-    db.execute("""UPDATE transactions
+def update_single_transaction(
+    year, month, day, description, amount, type, parcels, parcel_id
+):
+    db.execute(
+        """UPDATE transactions
                           SET year=?, month=?, day=?, description=?, amount=?, type=?, parcels=?
                           WHERE id=?""",
-                          year, month, day, description, amount, type, parcels, parcel_id)
+        year,
+        month,
+        day,
+        description,
+        amount,
+        type,
+        parcels,
+        parcel_id,
+    )
 
 
-def update_transaction_parcels(date, new_date, description, amount, type, parcels, parcel_id):
+def update_transaction_parcels(
+    date, new_date, description, amount, type, parcels, parcel_id
+):
     # Update without updating date
-    db.execute("""UPDATE transactions
+    db.execute(
+        """UPDATE transactions
                     SET description=?, amount=?, type=?, parcels=?
                     WHERE parcel_id=?""",
-                    description, amount, type, parcels, parcel_id)
-    
+        description,
+        amount,
+        type,
+        parcels,
+        parcel_id,
+    )
+
     last_date = date
 
     if not date == new_date:
         # update all parcels dates
-        parcels_rows = db.execute("SELECT * FROM transactions WHERE parcel_id=?", parcel_id)
+        parcels_rows = db.execute(
+            "SELECT * FROM transactions WHERE parcel_id=?", parcel_id
+        )
         for parcel_row in parcels_rows:
-            db.execute("""UPDATE transactions
+            db.execute(
+                """UPDATE transactions
                             SET year=?, month=?, day=?
                             WHERE id=? AND parcels=?""",
-                            new_date[0], new_date[1], new_date[2], parcel_row['id'], parcels)
+                new_date[0],
+                new_date[1],
+                new_date[2],
+                parcel_row["id"],
+                parcels,
+            )
 
             # update last date
             last_date = new_date
 
             # update new date
             new_month = get_next_month(new_date[0], new_date[1])
-            new_date[0] = new_month['year']
-            new_date[1] = new_month['month']
+            new_date[0] = new_month["year"]
+            new_date[1] = new_month["month"]
 
     return last_date
-
-
