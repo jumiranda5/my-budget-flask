@@ -118,7 +118,7 @@ def add():
         return redirect(f"/month/{date[0]}/{date[1]}")
     else:
         today = get_date()
-        today_formatted = f"{today['year']}-{today['month']}-{today['day']}"
+        today_formatted = f"{today['year']}-{today['month']:02d}-{today['day']:02d}"
         return render_template("add.html", today=today_formatted)
 
 
