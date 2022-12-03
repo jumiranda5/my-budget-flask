@@ -8,37 +8,38 @@
 
     <h1 class="form-title">Edit Page</h1>
 
-    <form class="container form" action="/edit/{{data.id}}" method="post">
+    <form class="form edit" action="/edit/{{data.id}}" method="post">
 
+        <!-- Date -->
+        <label for="date">Date:</label>
         <input type="date" id="date" name="date" value="{{data.date}}">
-        <br>
-        <br>
 
-        {% if data.type == "out" %}
-            <input type="radio" id="out" name="type" value="out" checked>
-            <label for="out">Expense</label>
-            <input type="radio" id="in" name="type" value="in">
-            <label for="in">Income</label>            
-        {% else %}
-            <input type="radio" id="out" name="type" value="out">
-            <label for="out">Expense</label>
-            <input type="radio" id="in" name="type" value="in" checked>
-            <label for="in">Income</label>
-        {% endif %}
-        <br>
-        <br>
+        <!-- Type -->
+        <div class="type-group flex">
+            {% if data.type == "out" %}
+                <input type="radio" id="out" name="type" value="out" checked>
+                <label for="out">Expense</label>
+                <input type="radio" id="in" name="type" value="in">
+                <label for="in">Income</label>            
+            {% else %}
+                <input type="radio" id="out" name="type" value="out">
+                <label for="out">Expense</label>
+                <input type="radio" id="in" name="type" value="in" checked>
+                <label for="in">Income</label>
+            {% endif %}
+        </div>
 
-        <input id="amount" name="amount" placeholder="Amount" type="text" value="{{data.amount}}">
-        <br>
-        <br>
+        <!-- Amount -->
+        <label for="date">Amount:</label>
+        <input id="amount" name="amount" placeholder="100.00" type="text" value="{{data.amount}}">
 
-        <input id="description" name="description" placeholder="Description" type="text" value="{{data.description}}">
-        <br>
-        <br>
+        <!-- Description -->
+        <label for="date">Description:</label>
+        <input id="description" name="description" placeholder="Groceries" type="text" value="{{data.description}}">
         
+        <!-- Repeat -->
+        <label for="date">Repeat:</label>
         <input id="repeat" name="repeat" placeholder="Repeat" type="number" value="{{data.parcels}}">
-        <br>
-        <br>
 
         <button type="submit">Edit</button>
     </form>

@@ -172,7 +172,82 @@ th, td {
     text-align: center;
 }
 
+/* Add/Edit form */
 
+.form-title {
+    margin: 140px auto 40px;
+    text-align: center;
+}
+
+.form {
+    background-color: #e4e3ec;
+    border-radius: 8px;
+    padding: 40px;
+    margin: 0 auto;
+    width: 400px;
+}
+
+.form button {
+    background-color: #7128a9;
+    color: #FFFFFF;
+    border-radius: 8px;
+    width: 100%;
+    height: 48px;
+    font-size: 16px;
+}
+
+.form.edit button {
+    margin-top: 32px;
+}
+
+.form button:hover {
+    background-color: #9540d5;
+}
+
+input[type=text],
+input[type=date],
+input[type=number] {
+    width: 100%;
+    height: 48px;
+    padding: 0px 20px;
+    margin: 8px 0 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+input[type=radio],
+input[type=checkbox] {
+    transform: scale(1.4);
+}
+
+.form label {
+    font-size: 14px;
+    color: #5f5b60;
+    display: inline-block;
+}
+
+.form .type-group,
+.form .payed-group {
+    margin-bottom: 16px;
+    padding: 16px;
+}
+
+.form .type-group label,
+.form .payed-group label {
+    font-size: 16px;
+    font-weight: 500;
+    align-self: center;
+}
+
+.form .type-group label {
+    margin-left: 8px;
+    margin-right: 32px;
+}
+
+.form .payed-group label {
+    margin-right: 16px;
+}
 
 /*----------------------------------
           FONTS AND COLORS
