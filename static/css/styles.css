@@ -159,6 +159,21 @@ th, td {
     padding: 0 8px 0;
 }
 
+/* Month Page Add link */
+
+.add-link-container {
+    justify-content: end;
+}
+
+.add-link {
+    display: block;
+    width: 200px;
+    padding: 18px;
+    text-align: center;
+}
+
+
+
 /*----------------------------------
           FONTS AND COLORS
 ------------------------------------*/
@@ -258,6 +273,10 @@ th, td {
     border-bottom: 2px solid #e4e3ec;
 }
 
+td {
+    border-bottom: 1px solid #e4e3ec;
+}
+
 .td-amount {
     font-weight: 500;
 }
@@ -268,6 +287,31 @@ th, td {
 
 .secondary-column {
     color: #5f5b60;
+}
+
+table button span {
+    color: #5f5b60;
+}
+
+table button span {
+    color: #5f5b60;
+}
+
+table a {
+    color: #7128a9;
+}
+
+/* Month Page Add link */
+
+.add-link {
+    background-color: #7128a9;
+    color: #FFFFFF;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.add-link:hover {
+    background-color: #9540d5;
 }
 
 /* Income / Expense colors */

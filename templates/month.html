@@ -10,8 +10,10 @@
     <div class="container month" id="month-balance-div">
         
         <!-- Month date group -->
-        <div class="date-group flex">
-            <p class="month-year" id="month-year">{{data.year}}</p>
+        <div class="title-group flex">
+            <div class="title">
+                <h2 class="month-year" id="month-year">{{data.year}}</h2>
+            </div>
             
             <div class="btn-group flex">
                 <a class="btn-group-link" href="/month/{{prev.year}}/{{prev.month}}">
@@ -25,15 +27,20 @@
                 </a>
             </div>
     
-            <div class="month-year"></div>
+            <div class="title"></div>
         </div>
 
         <!-- Month balance -->
-        <p class="balance-total">{{data.balance.total}}</p>
+        <!-- Change color depending on amount value -->
+        {% if data.balance.total > -1 %}
+            <p class="balance-total positive" id="month-total">{{data.balance.total_currency}}</p>
+        {% else %}
+            <p class="balance-total out" id="month-total">{{data.balance.total_currency}}</p>
+        {% endif %}
 
 
         <!-- Month income/expense totals -->
-        <div class="totals-group flex flex-center">
+        <div class="totals-group flex">
             <div class="flex">
                 <span class="material-symbols-sharp in">call_received</span>
                 <p>{{data.balance.income}}</p>
@@ -46,8 +53,8 @@
         </div>
     </div>
 
-    <div class="add-link">
-        <a href="/add">Add</a>
+    <div class="add-link-container container flex">
+        <a class="add-link" href="/add">Add</a>
     </div>
 
     <div class="container">
@@ -100,18 +107,24 @@
                             {% endif %}
                         </td>
                         <td>
+                            <a href="/edit/{{row.id}}">
+                                <span class="material-symbols-sharp">edit</span>
+                            </a>
+                        </td>
+                        <td>
                             {% if row.parcels > 1 %}
                                 <form action="/delete/{{data.year}}/{{data.month}}/{{row.parcel_id}}/{{row.parcels}}" method="post">
-                                    <button type="submit">Delete</button>
+                                    <button type="submit">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
                                 </form>
                             {% else %}
                                 <form action="/delete/{{data.year}}/{{data.month}}/{{row.id}}/{{row.parcels}}" method="post">
-                                    <button type="submit">Delete</button>
+                                    <button type="submit">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
                                 </form>
                             {% endif %}
-                        </td>
-                        <td>
-                            <a href="/edit/{{row.id}}">Edit</a>
                         </td>
                     </tr>
                 {% endfor %}
