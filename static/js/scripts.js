@@ -76,7 +76,7 @@ $(document).ready(function(){
     // Home page => update year div on prev button click
     $("#prev-year").click(function(){
         
-        var year = $("#current-month-year").val()
+        var year = $("#current-year").val()
         path = "/year-balance/" + year + "/prev"
 
         $.get(path, function(data, status){
@@ -118,7 +118,7 @@ $(document).ready(function(){
             $(this).text(data.months[i].balance.total_currency);
             
             // Change balance color according to value
-            if (data.balance >= 0) {
+            if (data.months[i].balance.total >= 0) {
                 $(this).removeClass("out")
                 $(this).addClass("positive")    
             }
