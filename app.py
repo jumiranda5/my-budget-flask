@@ -309,7 +309,7 @@ def month(year, month):
 
     # Get month transactions from db
     rows = db.execute(
-        "SELECT * from transactions WHERE (year=? AND month=?)", year, month
+        "SELECT * from transactions WHERE (year=? AND month=?) ORDER BY day", year, month
     )
 
     # Get transactions balance
